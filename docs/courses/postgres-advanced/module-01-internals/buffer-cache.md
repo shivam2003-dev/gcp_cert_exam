@@ -100,7 +100,7 @@ FROM pg_statio_user_tables;
 ```
 
 :::tip Production Metric
-A cache hit ratio below 99% indicates insufficient shared_buffers or poor access patterns. Aim for >99% for OLTP workloads.
+A cache hit ratio below 99% indicates insufficient shared_buffers or poor access patterns. Aim for greater than 99% for OLTP workloads.
 :::
 
 ## Effective Cache Size
@@ -138,7 +138,7 @@ The operating system also caches file pages:
 ### Too Small
 
 **Symptoms**:
-- Low cache hit ratio (<95%)
+- Low cache hit ratio (less than 95%)
 - High disk I/O
 - Slow queries
 
@@ -278,7 +278,7 @@ vmstat 1
 
 1. **Set shared_buffers to 25% of RAM** for dedicated servers
 2. **Set effective_cache_size to 50-75% of RAM**
-3. **Monitor cache hit ratio** - aim for >99%
+3. **Monitor cache hit ratio** - aim for greater than 99%
 4. **Tune work_mem carefully** - consider concurrent queries
 5. **Use connection pooling** to reduce per-connection memory
 6. **Monitor for swapping** - it kills performance
