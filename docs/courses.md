@@ -2,7 +2,7 @@
 
 Welcome to our comprehensive certification course library! Choose a course below to begin your learning journey.
 
-## Available Courses
+## 🎓 Available Courses
 
 import CourseCard from '@site/src/components/CourseCard';
 
@@ -10,41 +10,93 @@ import CourseCard from '@site/src/components/CourseCard';
 
 ---
 
+## 📚 Course Categories
+
+### ☁️ Cloud Certifications
+
+Learn to design, deploy, and manage applications on major cloud platforms. These courses prepare you for industry-recognized certifications.
+
+### 🗄️ Database Engineering
+
+Master database internals, performance tuning, and production operations. Deep technical content for engineers who need to understand how databases really work.
+
+### 🚀 More Coming Soon
+
+We're constantly expanding our course library. Check back regularly for new courses!
+
+## ✨ What Makes Our Courses Special
+
+<div className="row">
+  <div className="col col--4">
+    <div className="card margin--sm">
+      <div className="card__header">
+        <h3>🎯 Production-Focused</h3>
+      </div>
+      <div className="card__body">
+        <p>Learn how systems work in production, not just theory</p>
+      </div>
+    </div>
+  </div>
+  <div className="col col--4">
+    <div className="card margin--sm">
+      <div className="card__header">
+        <h3>💻 Hands-On Learning</h3>
+      </div>
+      <div className="card__body">
+        <p>Real-world examples, CLI commands, and practical exercises</p>
+      </div>
+    </div>
+  </div>
+  <div className="col col--4">
+    <div className="card margin--sm">
+      <div className="card__header">
+        <h3>📖 Comprehensive Content</h3>
+      </div>
+      <div className="card__body">
+        <p>Complete coverage of all topics with deep technical explanations</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+## 🚀 Getting Started
+
+1. **Browse Courses** - Explore the course cards above to find the right course for you
+2. **Review Course Details** - Click on any course to see the full curriculum and learning path
+3. **Start Learning** - Follow the structured modules and practice hands-on
+4. **Track Progress** - Complete modules sequentially and test your understanding
+
+## 📋 Course Features
+
+All our courses include:
+
+- ✅ **Structured Learning Paths** - Clear progression from basics to advanced topics
+- ✅ **Comprehensive Content** - Deep technical explanations with real-world context
+- ✅ **Hands-On Practice** - CLI commands, configuration examples, and practical exercises
+- ✅ **Production Scenarios** - Learn from real failures and how to fix them
+- ✅ **Expert Insights** - Tips, warnings, and best practices from experienced engineers
+- ✅ **Practice Questions** - Test your understanding (where applicable)
+
+## 💡 Choosing the Right Course
+
+### For Cloud Certifications
+- **Associate Level** - Start here if you're new to cloud platforms
+- **Professional Level** - Advanced courses for experienced cloud engineers
+
+### For Database Engineering
+- **Advanced Courses** - Designed for engineers with SQL and database fundamentals
+- **Production Focus** - Learn internals, performance, and operations
+
+## 🎯 Next Steps
+
+1. Select a course that matches your learning goals
+2. Review the course introduction and learning path
+3. Set up your practice environment (cloud accounts, local databases, etc.)
+4. Start with Module 1 and work through sequentially
+5. Practice hands-on and complete all exercises
+
+---
+
 **Note:** To add a new course, see the [Course Addition Guide](https://github.com/shivam2003-dev/gcp_cert_exam/blob/main/COURSE_ADDITION_GUIDE.md) for detailed instructions.
 
-## How to Use These Courses
-
-1. **Select a Course** - Click on any course card above to access the course materials
-2. **Follow the Learning Path** - Each course includes a structured learning path
-3. **Practice Hands-On** - Use cloud provider free tiers to practice concepts
-4. **Complete Practice Questions** - Test your understanding with exam-style questions
-5. **Take Practice Exams** - Assess your readiness before the real exam
-
-## Course Features
-
-All courses include:
-
-- ✅ **Comprehensive Content** - Covering all exam domains
-- ✅ **Hands-On Labs** - Real-world examples and exercises
-- ✅ **Practice Questions** - 50+ MCQs and 30+ scenario-based questions per module
-- ✅ **Answer Keys** - Detailed explanations for all questions
-- ✅ **Exam Tips** - Insider tips and common pitfalls
-- ✅ **Learning Paths** - Structured 4-8 week study plans
-
-## Getting Started
-
-1. Choose a course that matches your certification goal
-2. Review the course overview and learning path
-3. Set up your cloud account (free tier recommended)
-4. Start with Module 1 and progress sequentially
-5. Complete all practice questions and exams
-
-## Need Help?
-
-- Check the course-specific FAQ in each course
-- Review the exam strategy guide
-- Join our community discussions
-- Refer to official cloud provider documentation
-
 Happy learning! 🎓
-

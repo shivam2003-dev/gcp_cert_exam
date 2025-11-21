@@ -7,8 +7,8 @@ const courses = require('./courses.config');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Cloud Certification Courses',
-  tagline: 'Complete self-study courses for cloud certifications',
+  title: 'Expert Certification Courses',
+  tagline: 'Master cloud platforms, databases, and technologies with comprehensive self-study courses',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -63,7 +63,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'Cloud Cert Courses',
+        title: 'Expert Cert Courses',
         logo: {
           alt: 'Cloud Certification Logo',
           src: 'img/logo.svg',
@@ -128,7 +128,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Cloud Certification Courses. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Expert Certification Courses. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

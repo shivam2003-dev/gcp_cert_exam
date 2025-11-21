@@ -2,96 +2,223 @@
 slug: /
 ---
 
-# Welcome to Cloud Certification Courses
+# Welcome to Expert Certification Courses 🎓
 
-Welcome to our comprehensive library of cloud certification courses! 🎓
+**Master cloud platforms, databases, and cutting-edge technologies with our comprehensive self-study courses.**
 
-## 🎯 What We Offer
+Whether you're preparing for cloud certifications, mastering database internals, or advancing your technical skills, we provide production-grade courses designed by industry experts.
 
-We provide complete, self-study courses for major cloud certification exams, including:
+## 🌟 What We Offer
 
-- **Google Cloud Platform (GCP)** certifications
-- **Amazon Web Services (AWS)** certifications  
-- **Microsoft Azure** certifications
-- And more coming soon!
+Our course library covers a wide range of technologies and certifications:
 
-## 📚 Course Features
+### ☁️ Cloud Certifications
+- **Google Cloud Platform (GCP)** - Associate and Professional level certifications
+- **Amazon Web Services (AWS)** - Coming soon
+- **Microsoft Azure** - Coming soon
 
-Each course includes:
+### 🗄️ Database Engineering
+- **Advanced PostgreSQL** - Internals, performance, scaling, and production operations
+- More database courses coming soon
 
-- ✅ **Complete Coverage** - All exam domains covered in detail
-- ✅ **Structured Learning Path** - 4-8 week study plans
-- ✅ **Hands-On Practice** - Real-world examples and exercises
-- ✅ **Practice Questions** - 50+ MCQs and 30+ scenario-based questions per module
-- ✅ **Answer Keys** - Detailed explanations for all questions
-- ✅ **Exam Tips** - Insider tips, warnings, and common pitfalls
-- ✅ **CLI Examples** - Command-line snippets and configurations
+### 🚀 More Coming Soon
+We're constantly adding new courses to help you advance your career.
 
-## 🚀 Getting Started
+## ✨ Course Features
 
-1. **Browse Courses** - Visit the [Courses page](./courses) to see all available courses
-2. **Select a Course** - Choose the certification you want to pursue
-3. **Follow the Learning Path** - Each course has a structured 4-8 week plan
-4. **Practice Hands-On** - Use cloud provider free tiers to practice
-5. **Take Practice Exams** - Assess your readiness before the real exam
+Every course is designed with production-grade content:
 
-## 📖 How to Use These Courses
+<div className="row">
+  <div className="col col--6">
+    <div className="card margin--md">
+      <div className="card__header">
+        <h3>📚 Complete Coverage</h3>
+      </div>
+      <div className="card__body">
+        <p>All exam domains and topics covered in depth with real-world examples</p>
+      </div>
+    </div>
+  </div>
+  <div className="col col--6">
+    <div className="card margin--md">
+      <div className="card__header">
+        <h3>🎯 Structured Learning</h3>
+      </div>
+      <div className="card__body">
+        <p>4-12 week study plans with clear learning objectives and milestones</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-### For Each Course:
+<div className="row">
+  <div className="col col--6">
+    <div className="card margin--md">
+      <div className="card__header">
+        <h3>💻 Hands-On Practice</h3>
+      </div>
+      <div className="card__body">
+        <p>Real-world examples, CLI commands, and practical exercises</p>
+      </div>
+    </div>
+  </div>
+  <div className="col col--6">
+    <div className="card margin--md">
+      <div className="card__header">
+        <h3>🔧 Production Focus</h3>
+      </div>
+      <div className="card__body">
+        <p>Learn how systems work, how they break, and how to fix them</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-1. **Start with the Introduction** - Read the course overview and exam strategy
-2. **Follow Sequentially** - Work through modules in order
-3. **Practice Hands-On** - Create resources in your cloud account
-4. **Complete Practice Questions** - Test understanding after each module
-5. **Review Answer Keys** - Understand why answers are correct or incorrect
-6. **Take Practice Exams** - Assess readiness before scheduling the real exam
+<div className="row">
+  <div className="col col--6">
+    <div className="card margin--md">
+      <div className="card__header">
+        <h3>📝 Practice Questions</h3>
+      </div>
+      <div className="card__body">
+        <p>50+ multiple-choice and scenario-based questions per module (where applicable)</p>
+      </div>
+    </div>
+  </div>
+  <div className="col col--6">
+    <div className="card margin--md">
+      <div className="card__header">
+        <h3>💡 Expert Insights</h3>
+      </div>
+      <div className="card__body">
+        <p>Tips, warnings, and common pitfalls from experienced engineers</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+## 🚀 Quick Start
+
+<div className="row">
+  <div className="col col--12">
+    <div className="card margin--md">
+      <div className="card__header">
+        <h2>Get Started in 3 Steps</h2>
+      </div>
+      <div className="card__body">
+        <ol>
+          <li>
+            <strong>Browse Courses</strong> - Visit the <a href="./courses">Courses page</a> to explore all available courses
+          </li>
+          <li>
+            <strong>Choose Your Path</strong> - Select a course that matches your learning goals
+          </li>
+          <li>
+            <strong>Start Learning</strong> - Follow the structured learning path and practice hands-on
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+## 📖 Available Courses
+
+### [Google Cloud Associate Cloud Engineer (ACE)](/courses/gcp-ace/intro)
+
+Complete self-study course for the Google Cloud Associate Cloud Engineer certification exam. Covers all exam domains with hands-on practice and 50+ practice questions per module.
+
+**Duration:** 4-6 weeks | **Level:** Associate
+
+### [Advanced PostgreSQL: Internals, Performance, Scaling & Production](/courses/postgres-advanced/intro)
+
+Master PostgreSQL beyond CRUD. Learn internals, performance tuning, scaling, and production operations. Designed for backend engineers, DBAs, and SREs.
+
+**Duration:** 8-12 weeks | **Level:** Advanced
+
+:::tip New Course Available
+Check out our new **Advanced PostgreSQL** course for deep-dive content on database internals, performance tuning, and production operations!
+:::
 
 ## 🎓 Learning Approach
 
-Our courses use a **practical, exam-focused approach**:
+Our courses are designed for **practical, production-focused learning**:
 
-- **Conceptual Understanding** - Learn what each service does and when to use it
-- **Hands-On Practice** - Use cloud consoles and CLIs
-- **Exam Patterns** - Recognize common question patterns and scenarios
-- **Practice Questions** - Test understanding with realistic exam-style questions
+- **Deep Technical Content** - Understand how things actually work
+- **Real-World Scenarios** - Learn from actual production failures and solutions
+- **Hands-On Practice** - Use real tools and environments
+- **Production Patterns** - Learn what works (and what breaks) in production
+- **Expert-Level Content** - Content designed for engineers preparing for senior roles
 
-## 💡 Prerequisites
+## 💡 Who Are These Courses For?
 
-Before starting any course, you should have:
+- **Cloud Engineers** preparing for certifications
+- **Backend Engineers** wanting to master databases
+- **DevOps Engineers** building scalable systems
+- **SREs** managing production infrastructure
+- **Database Engineers** optimizing performance
+- **Technical Architects** designing systems
 
-- Basic understanding of cloud computing concepts
-- Familiarity with command-line interfaces
-- Basic networking knowledge (IP addresses, subnets, ports)
-- Experience with any programming language (helpful but not required)
+## 🛠️ Prerequisites
 
-:::tip Pro Tip
-No prior cloud experience is required for associate-level courses! Each course assumes you're new to that cloud platform and will teach you everything you need to know.
+Most courses assume basic familiarity with:
+- Command-line interfaces
+- Basic networking concepts
+- General software engineering principles
+
+:::info No Prior Experience Required
+Associate-level courses assume you're new to the platform. Advanced courses build on fundamental knowledge.
 :::
 
-## 🛠️ Hands-On Practice
+## 📚 Course Structure
 
-Throughout all courses, you'll see examples using:
+Each course follows a structured approach:
 
-- **Cloud Consoles** - Web-based interfaces
-- **CLI Tools** - Command-line interfaces (gcloud, aws cli, az cli)
-- **YAML/JSON** - Configuration files
-- **Infrastructure as Code** - Terraform, CloudFormation, ARM templates
+1. **Introduction** - Course overview, learning objectives, and prerequisites
+2. **Modules** - Comprehensive content organized by topic
+3. **Hands-On Labs** - Practical exercises and real-world examples
+4. **Practice Questions** - Test your understanding (where applicable)
+5. **Review** - Summary and next steps
 
-:::warning Important
-To get the most out of these courses, create accounts with cloud providers and use their free tiers to practice. Hands-on experience is essential for passing certification exams.
-:::
-
-## 📚 Additional Resources
+## 🌐 Resources
 
 While our courses are comprehensive, we recommend supplementing with:
 
-- Official cloud provider documentation
+- Official provider documentation
 - Official exam guides
-- Cloud provider free tier accounts
-- Hands-on labs and practice environments
+- Free tier accounts for hands-on practice
+- Community forums and discussions
 
 ## 🎯 Ready to Begin?
 
-Visit the [Courses page](./courses) to browse all available courses and start your certification journey!
+<div className="row">
+  <div className="col col--12">
+    <div className="card margin--md" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white'}}>
+      <div className="card__header">
+        <h2 style={{color: 'white'}}>Start Your Learning Journey Today</h2>
+      </div>
+      <div className="card__body">
+        <p style={{fontSize: '1.2em', marginBottom: '1.5rem'}}>
+          Browse our <a href="./courses" style={{color: '#ffd700', fontWeight: 'bold'}}>complete course catalog</a> and choose the path that's right for you.
+        </p>
+        <div style={{display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
+          <a className="button button--primary button--lg" href="./courses">
+            View All Courses
+          </a>
+          <a className="button button--secondary button--lg" href="./courses/gcp-ace/intro">
+            GCP ACE Course
+          </a>
+          <a className="button button--secondary button--lg" href="./courses/postgres-advanced/intro">
+            PostgreSQL Course
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-Good luck! 🚀
+---
+
+**Built with ❤️ by engineers, for engineers.**
+
+Good luck with your certification journey! 🚀
