@@ -279,17 +279,55 @@ nft list ruleset > /etc/nftables.conf
 
 ### Connection Tracking
 
-```bash
-# View connections
-conntrack -L
+Connection tracking (conntrack) maintains state information about network connections. This is used by firewalls (NAT, stateful filtering) and is essential for understanding active connections.
 
-# Count connections
+```bash
+# View connections - see all tracked connections
+conntrack -L
+```
+
+:::note Connection Tracking States
+Each connection has a state:
+- `NEW`: New connection (SYN seen)
+- `ESTABLISHED`: Connection established (bidirectional traffic)
+- `RELATED`: Related connection (e.g., FTP data connection)
+- `INVALID`: Invalid packets
+- `UNTRACKED`: Not tracked (bypassed)
+
+The state helps firewalls make decisions (e.g., allow ESTABLISHED, block NEW from untrusted sources).
+:::
+
+```bash
+# Count connections - monitor connection table usage
 sysctl net.netfilter.nf_conntrack_count
 sysctl net.netfilter.nf_conntrack_max
+```
 
-# Delete connection
+:::warning Connection Table Exhaustion
+When `nf_conntrack_count` approaches `nf_conntrack_max`:
+- New connections may be rejected
+- NAT may stop working
+- Firewall rules may fail
+
+This is a common issue on busy servers. Solutions:
+- Increase `nf_conntrack_max`
+- Reduce connection timeouts
+- Use connection tracking helpers efficiently
+:::
+
+```bash
+# Delete connection - remove specific connection from tracking table
 conntrack -D -s <src_ip> -d <dst_ip> -p tcp --dport <port>
 ```
+
+:::tip Troubleshooting Stuck Connections
+Sometimes connections get stuck in the tracking table (e.g., after network issues). Deleting them allows:
+- NAT to work again
+- New connections to be established
+- Firewall rules to apply correctly
+
+Use this when you see connections that should be closed but remain in ESTABLISHED state.
+:::
 
 ## Network Queues
 

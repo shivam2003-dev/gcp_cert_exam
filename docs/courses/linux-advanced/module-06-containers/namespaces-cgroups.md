@@ -218,20 +218,59 @@ echo "8:0 10485760" > /sys/fs/cgroup/blkio/blkio.throttle.write_bps_device
 
 ### Manual cgroup Creation (v2)
 
+Creating cgroups manually helps you understand how resource limits work. In practice, systemd or container runtimes manage cgroups automatically, but understanding the manual process is valuable for debugging.
+
 ```bash
-# Create cgroup
+# Create cgroup - just a directory in the cgroup filesystem
 sudo mkdir /sys/fs/cgroup/mygroup
+```
 
-# Enable controllers
+:::note cgroup as Directory
+cgroups are represented as directories in the cgroup filesystem. Each directory is a cgroup. Child directories are child cgroups. This hierarchical structure allows nested resource limits.
+:::
+
+```bash
+# Enable controllers - specify which resource controllers this cgroup can use
 echo "+cpu +memory" > /sys/fs/cgroup/mygroup/cgroup.subtree_control
+```
 
-# Add process
+:::important Controller Delegation
+The `+` prefix enables controllers for child cgroups. This allows:
+- Parent cgroup to delegate CPU/memory control to children
+- Hierarchical resource management
+- Fine-grained control at different levels
+
+Without this, child cgroups cannot set resource limits.
+:::
+
+```bash
+# Add process - move current shell into the cgroup
 echo $$ > /sys/fs/cgroup/mygroup/cgroup.procs
+```
 
-# Set limits
+:::warning Process Movement
+When you add a process to a cgroup:
+- The process and all its threads move
+- Resource limits immediately apply
+- The process cannot escape (unless it has CAP_SYS_ADMIN)
+
+This is how containers enforce resource limits.
+:::
+
+```bash
+# Set limits - configure resource constraints
 echo "50000 100000" > /sys/fs/cgroup/mygroup/cpu.max
 echo "1G" > /sys/fs/cgroup/mygroup/memory.max
 ```
+
+:::tip Understanding cpu.max Format
+The format is `quota period` in microseconds:
+- `50000 100000` = 50ms quota per 100ms period = 50% CPU
+- `100000 100000` = 100ms quota per 100ms period = 100% CPU (1 core)
+- `200000 100000` = 200ms quota per 100ms period = 200% CPU (2 cores)
+
+For memory, it's simpler: `1G` = 1 gigabyte limit.
+:::
 
 ### systemd cgroups
 
