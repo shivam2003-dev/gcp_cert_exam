@@ -82,28 +82,87 @@ taskset -cp 2,3 <pid>
 
 ### Dirty Page Tuning
 
+Dirty pages are file data that has been modified in memory but not yet written to disk. The kernel batches these writes for efficiency, but this can cause latency spikes when writeback finally happens.
+
 ```bash
-# Reduce dirty pages
+# Reduce dirty pages - lower thresholds for writeback
 sysctl vm.dirty_ratio=10
 sysctl vm.dirty_background_ratio=5
-
-# Defaults are often too high (40% and 10%)
-# Lower values = more frequent writeback
-# Better for latency-sensitive workloads
 ```
+
+:::important Understanding Dirty Page Thresholds
+- **`vm.dirty_ratio`**: When dirty pages reach this percentage of total RAM, processes are blocked from writing until writeback completes. Default: 40% (very high!)
+- **`vm.dirty_background_ratio`**: When dirty pages reach this percentage, kernel starts background writeback. Default: 10%
+
+Lower values mean:
+- More frequent writeback (better latency)
+- Less batching (slightly lower throughput)
+- More predictable I/O patterns
+:::
+
+:::warning Default Settings Are Too High
+The default values (40% and 10%) are designed for throughput, not latency. For production systems, especially databases or latency-sensitive applications:
+- `dirty_ratio=10` or lower
+- `dirty_background_ratio=5` or lower
+
+This prevents large writeback spikes that can cause I/O latency.
+:::
+
+:::tip Database Tuning
+For databases, consider even lower values:
+- `dirty_ratio=5`
+- `dirty_background_ratio=2`
+
+Databases manage their own write caching and prefer predictable I/O over batching.
+:::
 
 ### Swappiness
 
+Swappiness controls how aggressively the kernel swaps pages to disk. This is a critical setting that affects both performance and memory management behavior.
+
 ```bash
-# Reduce swap usage
+# Reduce swap usage - prefer keeping pages in RAM
 sysctl vm.swappiness=10
+```
 
-# For databases (very low)
+:::important How Swappiness Works
+Swappiness is a value from 0-100 that influences the kernel's decision between:
+- Swapping anonymous pages to disk
+- Reclaiming page cache
+
+Lower values (0-10) mean: "Prefer reclaiming cache over swapping"
+Higher values (50-100) mean: "Prefer swapping over reclaiming cache"
+
+The default (60) is a compromise, but often too high for servers.
+:::
+
+```bash
+# For databases (very low) - minimize swap at all costs
 sysctl vm.swappiness=1
+```
 
-# For desktop (default)
+:::warning Database Swapping
+Databases should almost never swap because:
+- Swap is 100-1000x slower than RAM
+- Database performance degrades catastrophically
+- Queries that normally take milliseconds can take seconds
+
+Set swappiness to 1 for databases, and ensure you have enough RAM.
+:::
+
+```bash
+# For desktop (default) - acceptable for interactive systems
 sysctl vm.swappiness=60
 ```
+
+:::tip Choosing Swappiness
+- **Servers with plenty of RAM**: `swappiness=10` (prefer cache, avoid swap)
+- **Databases**: `swappiness=1` (minimize swap)
+- **Desktop systems**: `swappiness=60` (default, acceptable)
+- **Embedded systems**: `swappiness=100` (maximize RAM for cache)
+
+The key is: if you have enough RAM, lower swappiness. If RAM is tight, you might need higher swappiness (but adding RAM is better).
+:::
 
 ### Memory Reserves
 

@@ -54,20 +54,79 @@ systemctl status kdump
 ```
 
 **Analyze with crash utility:**
+
+The `crash` utility is a powerful debugger for analyzing kernel crash dumps. It's similar to GDB but understands kernel data structures.
+
 ```bash
-# Install crash utility
+# Install crash utility - essential for kernel debugging
 apt-get install crash linux-crashdump
+```
 
-# Analyze vmcore
+:::important Debug Symbols Required
+You need kernel debug symbols to analyze vmcores. These are in packages like:
+- `linux-image-$(uname -r)-dbg` (Debian/Ubuntu)
+- `kernel-debuginfo` (RHEL/CentOS)
+
+Without debug symbols, crash can't show function names or interpret data structures.
+:::
+
+```bash
+# Analyze vmcore - load the crash dump
 crash /usr/lib/debug/lib/modules/$(uname -r)/vmlinux /var/crash/vmcore
+```
 
-# Inside crash:
-crash> bt        # Backtrace
-crash> ps        # Process list
-crash> log       # Kernel log
-crash> kmem -i   # Memory info
-crash> mod       # Loaded modules
-crash> exit      # Exit
+:::warning Version Matching
+The kernel version used to analyze the vmcore must match the kernel that crashed. Using a different version will give incorrect results or fail to load.
+:::
+
+**Inside crash - essential commands:**
+
+```bash
+crash> bt        # Backtrace - see the call stack when panic occurred
+```
+
+:::tip Reading Backtraces
+The backtrace shows the function call chain leading to the panic. Start from the bottom (most recent call) and work up. Look for:
+- Driver functions (often the culprit)
+- Kernel subsystems
+- Hardware-related code
+
+The function at the bottom is usually where the panic occurred.
+:::
+
+```bash
+crash> ps        # Process list - see what processes were running
+```
+
+This shows all processes at the time of crash. Useful for identifying if a specific process or workload triggered the panic.
+
+```bash
+crash> log       # Kernel log - see kernel messages before panic
+```
+
+The kernel log often contains error messages or warnings that preceded the panic. These provide crucial context.
+
+```bash
+crash> kmem -i   # Memory info - see memory state
+```
+
+Shows memory usage, allocations, and can help identify memory corruption issues.
+
+```bash
+crash> mod       # Loaded modules - see what modules were loaded
+```
+
+:::important Module Analysis
+Check which modules were loaded. Often panics are caused by:
+- Third-party drivers
+- Out-of-tree modules
+- Modules with known bugs
+
+If a specific module appears in the backtrace, that's your likely culprit.
+:::
+
+```bash
+crash> exit      # Exit crash utility
 ```
 
 ### Step 3: Identify Offending Module
