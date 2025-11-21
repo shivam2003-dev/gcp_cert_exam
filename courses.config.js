@@ -18,22 +18,19 @@ const courses = [
     level: 'Associate',
     category: 'Cloud Certification',
   },
+  {
+    id: 'postgres-advanced',
+    name: 'Advanced PostgreSQL: Internals, Performance, Scaling & Production',
+    shortName: 'PostgreSQL Advanced',
+    description: 'Master PostgreSQL beyond CRUD. Learn internals, performance tuning, scaling, and production operations.',
+    icon: '🐘',
+    color: '#336791',
+    path: 'courses/postgres-advanced',
+    duration: '8-12 weeks',
+    level: 'Advanced',
+    category: 'Database Engineering',
+  },
   // Add more courses here as needed
-  // Example:
-  // {
-  //   id: 'aws-saa',
-  //   name: 'AWS Solutions Architect Associate',
-  //   shortName: 'AWS SAA',
-  //   description: 'Complete course for AWS Solutions Architect Associate certification',
-  //   icon: '🚀',
-  //   color: '#FF9900',
-  //   path: 'courses/aws-saa',
-  //   examGuideUrl: 'https://aws.amazon.com/certification/certified-solutions-architect-associate/',
-  //   officialDocsUrl: 'https://docs.aws.amazon.com/',
-  //   duration: '6-8 weeks',
-  //   level: 'Associate',
-  //   category: 'Cloud Certification',
-  // },
 ];
 
 module.exports = courses;

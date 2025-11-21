@@ -155,6 +155,79 @@ const sidebars = {
       ],
     },
   ],
+
+  // PostgreSQL Advanced Course Sidebar
+  postgresAdvancedSidebar: [
+    {
+      type: 'doc',
+      id: 'courses/postgres-advanced/intro',
+      label: 'Course Introduction',
+    },
+    {
+      type: 'category',
+      label: 'Module 1: PostgreSQL Internals',
+      items: [
+        'courses/postgres-advanced/module-01-internals/intro',
+        'courses/postgres-advanced/module-01-internals/mvcc-architecture',
+        'courses/postgres-advanced/module-01-internals/wal-checkpointing',
+        'courses/postgres-advanced/module-01-internals/buffer-cache',
+        'courses/postgres-advanced/module-01-internals/background-processes',
+        'courses/postgres-advanced/module-01-internals/vacuum-autovacuum',
+        'courses/postgres-advanced/module-01-internals/disk-storage',
+        'courses/postgres-advanced/module-01-internals/crash-recovery',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 2: Query Planner & Performance Tuning',
+      items: [
+        'courses/postgres-advanced/module-02-planner/intro',
+        'courses/postgres-advanced/module-02-planner/planner-basics',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 3: Concurrency, Locks & Transactions',
+      items: [
+        'courses/postgres-advanced/module-03-transactions/intro',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 4: Scaling PostgreSQL',
+      items: [
+        'courses/postgres-advanced/module-04-scaling/intro',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 5: High Availability & Disaster Recovery',
+      items: [
+        'courses/postgres-advanced/module-05-ha-dr/intro',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 6: Production Tuning & Configuration',
+      items: [
+        'courses/postgres-advanced/module-06-tuning/intro',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 7: Monitoring, Troubleshooting & Observability',
+      items: [
+        'courses/postgres-advanced/module-07-monitoring/intro',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 8: PostgreSQL at Massive Scale',
+      items: [
+        'courses/postgres-advanced/module-08-high-scale/intro',
+      ],
+    },
+  ],
 };
 
 module.exports = sidebars;
