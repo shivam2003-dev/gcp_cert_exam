@@ -71,17 +71,39 @@ ausyscall --dump | head -20
 
 ### Inspecting System Calls
 
+The `strace` tool is essential for understanding what system calls your applications are making. This is particularly useful when debugging performance issues or understanding application behavior.
+
 ```bash
 # Trace syscalls for a process
 strace -p <pid>
+```
 
-# Count syscalls
+:::note Understanding strace Output
+When you run `strace -p <pid>`, you'll see every system call the process makes in real-time. Each line shows:
+- The system call name (e.g., `read`, `write`, `open`)
+- Arguments passed to the syscall
+- Return value or error code
+- Time taken (if using `-T` flag)
+:::
+
+```bash
+# Count syscalls - useful for performance analysis
 strace -c -p <pid>
+```
 
-# Trace specific syscalls only
+:::tip Performance Analysis
+The `-c` flag provides a summary showing which syscalls are called most frequently and how much time is spent in each. This helps identify bottlenecks - if you see thousands of `open()` calls, your application might be opening files inefficiently.
+:::
+
+```bash
+# Trace specific syscalls only - reduces noise
 strace -e trace=network -p <pid>
 strace -e trace=file -p <pid>
 ```
+
+:::warning Production Overhead
+`strace` has significant overhead (can slow down processes by 10-100x). Use it sparingly in production. For production debugging, consider using `perf` or eBPF tools which have much lower overhead.
+:::
 
 ## Kernel Architecture Overview
 
@@ -149,16 +171,43 @@ ps -eo pid,state,comm | head
 
 ### Inspecting Process Lifecycle
 
+Understanding how processes are created and managed is crucial for debugging issues like zombie processes, fork bombs, or processes that won't start.
+
 ```bash
-# Follow process tree
+# Follow process tree - shows parent-child relationships
 pstree -a -p
+```
 
-# Monitor fork/exec events
+:::important Process Tree Visualization
+The process tree shows the hierarchy of all processes. PID 1 (usually systemd) is the root. This is essential when debugging issues like:
+- Finding which process spawned a problematic child
+- Understanding service dependencies
+- Identifying orphaned processes
+:::
+
+```bash
+# Monitor fork/exec events - see how processes are created
 strace -e trace=fork,execve,clone -f <command>
+```
 
-# Check process limits
+:::note Fork vs Clone
+Modern Linux uses `clone()` system call for both processes and threads. The flags determine what's shared:
+- `CLONE_VM`: Shared memory (threads)
+- `CLONE_FILES`: Shared file descriptors
+- `CLONE_FS`: Shared filesystem info
+:::
+
+```bash
+# Check process limits - see resource constraints
 cat /proc/<pid>/limits
 ```
+
+:::tip Production Debugging
+When a process fails mysteriously, always check `/proc/<pid>/limits`. Common issues:
+- `Max open files` too low → "Too many open files" errors
+- `Max processes` too low → Cannot fork new processes
+- `Max file size` too low → Cannot write large files
+:::
 
 ## Signals and Interrupts
 
@@ -180,16 +229,37 @@ kill -l
 
 ### Signal Handling
 
+Signals are the primary mechanism for inter-process communication and process control in Linux. Understanding signal handling is critical for graceful shutdowns and debugging hung processes.
+
 ```bash
-# Send signal
+# Send signal - SIGTERM allows graceful shutdown
 kill -TERM <pid>
+```
 
-# Check signal masks
+:::important Signal Delivery Order
+Signals are delivered asynchronously. If a process is in a system call, the signal handler runs after the syscall completes (unless the syscall is interrupted). This is why `SIGKILL` works when `SIGTERM` doesn't - `SIGKILL` cannot be caught or ignored.
+:::
+
+```bash
+# Check signal masks - see which signals are blocked or ignored
 cat /proc/<pid>/status | grep Sig
+```
 
-# Block signals in script
+:::note Signal States
+The status shows three signal sets:
+- `SigBlk`: Blocked signals (deferred delivery)
+- `SigIgn`: Ignored signals
+- `SigCgt`: Caught signals (have handlers)
+:::
+
+```bash
+# Block signals in script - prevents interruption during critical sections
 trap '' SIGTERM
 ```
+
+:::warning Signal Blocking
+Blocking signals can prevent graceful shutdown. Always unblock signals after critical sections, or use timeouts to ensure processes don't hang forever.
+:::
 
 ### Hardware Interrupts
 
@@ -244,24 +314,62 @@ cat /proc/cmdline
 
 ## Kernel Modules
 
-Kernel modules extend kernel functionality without recompiling:
+Kernel modules allow you to extend kernel functionality without recompiling the entire kernel. This is how device drivers and filesystem support are added to Linux.
+
+:::important Module vs Built-in
+Some functionality is built into the kernel (cannot be removed), while modules can be loaded/unloaded dynamically. Built-in code is always present, modules are loaded on demand.
+:::
 
 ```bash
-# List loaded modules
+# List loaded modules - shows what kernel extensions are active
 lsmod
+```
 
-# Module information
+:::tip Understanding lsmod Output
+The output shows:
+- Module name
+- Size in memory
+- Reference count (how many processes/modules depend on it)
+- Dependencies (what other modules it uses)
+
+High reference counts mean the module is in use and cannot be removed.
+:::
+
+```bash
+# Module information - see details about a module
 modinfo <module_name>
+```
 
-# Load module
+This shows the module's description, author, license, parameters, and dependencies. The license is important - GPL modules can only be loaded if the kernel is GPL-compatible.
+
+```bash
+# Load module - kernel automatically loads dependencies
 modprobe <module_name>
+```
 
-# Remove module
+:::note modprobe vs insmod
+- `modprobe`: Intelligent loader that handles dependencies automatically
+- `insmod`: Low-level loader that requires manual dependency handling
+Always use `modprobe` unless you have a specific reason not to.
+:::
+
+```bash
+# Remove module - only works if nothing is using it
 modprobe -r <module_name>
+```
 
-# Module parameters
+:::warning Module Removal
+Removing a module that's in use will fail. Check with `lsmod` first. Some modules cannot be removed if they're providing critical functionality (like the root filesystem driver).
+:::
+
+```bash
+# Module parameters - configure module behavior
 cat /sys/module/<module_name>/parameters/*
 ```
+
+:::tip Module Parameters
+Many modules accept parameters to configure their behavior. For example, network drivers often accept parameters for interrupt coalescing or queue sizes. Check module documentation or use `modinfo` to see available parameters.
+:::
 
 ## /proc and /sys Filesystems
 
@@ -296,15 +404,29 @@ cat /sys/module/<module_name>/parameters/*
 
 ## Key Takeaways
 
-1. **User/Kernel Boundary**: Strict separation enforced by hardware
-2. **System Calls**: Only way to access kernel services
-3. **Process Lifecycle**: fork → execve → exit
-4. **Signals**: Software interrupts for process communication
-5. **Kernel Modules**: Extend kernel without recompilation
-6. **/proc and /sys**: Windows into kernel internals
+1. **User/Kernel Boundary**: Strict separation enforced by hardware protection rings. This is fundamental to Linux security and stability.
+2. **System Calls**: The only way user programs can access kernel services. Every file operation, network call, and process management operation goes through syscalls.
+3. **Process Lifecycle**: fork → execve → exit. Understanding this helps debug process creation issues, zombie processes, and service startup problems.
+4. **Signals**: Software interrupts for process communication. Essential for graceful shutdowns, debugging hung processes, and inter-process coordination.
+5. **Kernel Modules**: Extend kernel without recompilation. Most device drivers and filesystem support are modules.
+6. **/proc and /sys**: Windows into kernel internals. These pseudo-filesystems provide real-time access to kernel state without requiring special tools.
 
 :::tip Production Insight
-Understanding the user/kernel boundary helps you understand why certain operations require privileges and why some debugging tools need root access.
+Understanding the user/kernel boundary helps you understand why certain operations require privileges and why some debugging tools need root access. When you see "Permission denied" errors, it's often because the operation requires kernel privileges that only root has.
+:::
+
+:::warning Security Implication
+The user/kernel boundary is a security feature. Kernel bugs can compromise the entire system, while user-space bugs are isolated. This is why kernel security updates are critical.
+:::
+
+:::important Debugging Strategy
+When troubleshooting production issues, always start by understanding:
+1. Is this a user-space or kernel-space problem?
+2. What system calls is the application making?
+3. Are there any signals being sent/received?
+4. What does /proc tell us about the process state?
+
+This systematic approach prevents wasted time debugging in the wrong layer.
 :::
 
 ## Next Steps
