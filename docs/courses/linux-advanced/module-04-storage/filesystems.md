@@ -1,78 +1,349 @@
 # Filesystems & Journaling
 
-## ext4 vs XFS vs Btrfs
+## Filesystem Overview
 
-| Feature | ext4 | XFS | Btrfs |
-|---------|------|-----|-------|
-| Maturity | Very stable | Very stable | Mature but complex |
-| Max file | 16TB | 8EB | 16EB |
-| Journaling | Ordered/writeback/data | Metadata | Copy-on-write |
-| Best for | General purpose | Large files, parallel workloads | Snapshot-heavy, dev |
+Linux supports many filesystems, each optimized for different use cases. Understanding filesystem internals is essential for performance tuning and recovery.
 
-## Journaling Modes (ext4)
+## Common Filesystems
+
+### ext4
+
+**Characteristics:**
+- Default on most Linux distributions
+- Journaled filesystem
+- Maximum file size: 16TB
+- Maximum filesystem size: 1EB
+
+**Best for:**
+- General purpose
+- Desktop systems
+- Most server workloads
+
+### XFS
+
+**Characteristics:**
+- High-performance filesystem
+- Excellent for large files
+- Maximum file size: 8EB
+- Maximum filesystem size: 8EB
+
+**Best for:**
+- Large files
+- High I/O workloads
+- Database systems
+
+### Btrfs
+
+**Characteristics:**
+- Copy-on-write (COW)
+- Built-in snapshots
+- Compression
+- RAID support
+
+**Best for:**
+- Systems needing snapshots
+- Development environments
+- Backup systems
+
+### ZFS (via ZFS on Linux)
+
+**Characteristics:**
+- Advanced features
+- Built-in compression
+- Snapshots and clones
+- RAID-Z
+
+**Best for:**
+- Enterprise storage
+- Backup systems
+- High-reliability requirements
+
+## Filesystem Structure
+
+### ext4 Layout
+
+```
+Block Group 0    Block Group 1    Block Group 2    ...
+├── Superblock  ├── Superblock   ├── Superblock
+├── Group       ├── Group        ├── Group
+│   Descriptors │   Descriptors  │   Descriptors
+├── Block       ├── Block        ├── Block
+│   Bitmap      │   Bitmap       │   Bitmap
+├── Inode       ├── Inode        ├── Inode
+│   Bitmap      │   Bitmap       │   Bitmap
+├── Inode Table ├── Inode Table  ├── Inode Table
+└── Data Blocks └── Data Blocks └── Data Blocks
+```
+
+### Key Components
+
+**Superblock:**
+- Filesystem metadata
+- Size, block count, inode count
+- Backup superblocks for recovery
+
+**Inode:**
+- File metadata (permissions, size, timestamps)
+- Pointers to data blocks
+- Limited number (determines max files)
+
+**Data Blocks:**
+- Actual file data
+- Typically 4KB
+
+## Journaling
+
+### What is Journaling?
+
+Journaling ensures filesystem consistency by:
+1. Recording changes in journal before applying
+2. Applying changes to filesystem
+3. Marking journal entry complete
+
+### Journaling Modes (ext4)
+
+**data=ordered (default):**
+- Metadata journaled
+- Data written before metadata commit
+- Good balance of performance and safety
+
+**data=writeback:**
+- Only metadata journaled
+- Data may be written after metadata
+- Faster, less safe
+
+**data=journal:**
+- Data and metadata journaled
+- Safest, slowest
+- Rarely used
+
+### Checking Journal Mode
 
 ```bash
 # Check mode
-tune2fs -l /dev/sda1 | grep 'Journal'
-```
+tune2fs -l /dev/sda1 | grep "Default mount options"
 
-- `ordered` (default): metadata journaled, data flushed before commit
-- `writeback`: metadata journaled, data may be after commit
-- `data=journal`: data + metadata journaled (slow, safest)
+# Change mode (remount required)
+tune2fs -o journal_data_writeback /dev/sda1
+```
 
 ## Filesystem Tools
 
-### fsck
+### mkfs (Make Filesystem)
 
 ```bash
-# Check ext4
-e2fsck -f /dev/sda1
+# Create ext4
+mkfs.ext4 /dev/sda1
+
+# With options
+mkfs.ext4 -L mydata -m 0 /dev/sda1
+# -L: Label
+# -m: Reserved blocks percentage (0 = none)
+
+# Create XFS
+mkfs.xfs /dev/sda1
+
+# Create Btrfs
+mkfs.btrfs /dev/sda1
+```
+
+### tune2fs (ext4 Tuning)
+
+```bash
+# View filesystem info
+tune2fs -l /dev/sda1
+
+# Change label
+tune2fs -L newlabel /dev/sda1
+
+# Change reserved blocks
+tune2fs -m 1 /dev/sda1  # 1% reserved
+
+# Enable/disable features
+tune2fs -O ^has_journal /dev/sda1  # Disable journal
+```
+
+### xfs_admin (XFS Tuning)
+
+```bash
+# View info
+xfs_admin -l /dev/sda1
+
+# Change label
+xfs_admin -L newlabel /dev/sda1
+```
+
+## Mount Options
+
+### Common Options
+
+```bash
+# /etc/fstab example
+UUID=... /data ext4 defaults,noatime,nodiratime 0 2
+
+# Options:
+# defaults - rw,suid,dev,exec,auto,nouser,async
+# noatime - Don't update access time
+# nodiratime - Don't update directory access time
+# relatime - Update atime relative to mtime/ctime
+# barrier=1 - Write barriers (safety)
+# barrier=0 - No barriers (performance, risky)
+```
+
+### Performance Options
+
+**noatime:**
+- Reduces metadata writes
+- Improves performance
+- Use when atime not needed
+
+**nodiratime:**
+- Don't update directory atime
+- Further reduces writes
+
+**relatime:**
+- Update atime only if older than mtime/ctime
+- Balance between performance and compatibility
+
+## Filesystem Maintenance
+
+### fsck (Filesystem Check)
+
+```bash
+# Check ext4 (dry run)
+fsck.ext4 -n /dev/sda1
+
+# Check and repair
+fsck.ext4 -y /dev/sda1
+
+# Force check
+fsck.ext4 -f /dev/sda1
 
 # Check XFS
-xfs_repair -n /dev/sdb1   # -n for dry-run
+xfs_repair -n /dev/sda1  # Dry run
+xfs_repair /dev/sda1     # Repair
 ```
 
-### Mount Options
+### When to Run fsck
+
+- After unclean shutdown
+- Periodic checks (monthly)
+- Before major operations
+- When corruption suspected
+
+### Automatic fsck
 
 ```bash
-UUID=... /data ext4 defaults,noatime,nodiratime 0 2
-UUID=... /logs xfs defaults,noatime,logbsize=256k 0 2
+# Check mount count
+tune2fs -l /dev/sda1 | grep "Maximum mount count"
+
+# Set to check every 30 mounts
+tune2fs -c 30 /dev/sda1
+
+# Check interval
+tune2fs -l /dev/sda1 | grep "Check interval"
 ```
 
-## Diagnosing Filesystem Issues
+## Inode Management
 
-### Corruption Signs
-- `EXT4-fs error` in dmesg
-- `XFS (dm-0): Metadata corruption` messages
-
-```bash
-journalctl -k -g 'EXT4'
-```
-
-### Recovery Workflow
-
-1. Mount read-only if corruption suspected
-2. Take block-level backup (dd, snapshots)
-3. Run fsck/xfs_repair
-4. Restore from backup if needed
-
-### Inode Exhaustion
+### Inode Limits
 
 ```bash
 # Check inode usage
 df -i
+
+# Check inode count
+tune2fs -l /dev/sda1 | grep "Inode count"
+
+# Create with more inodes
+mkfs.ext4 -N 10000000 /dev/sda1
 ```
 
-Fix by cleaning small files, increasing inode count when formatting (`mkfs -N`).
+### Inode Exhaustion
 
-## IO Latency Debugging
+**Symptoms:**
+- "No space left on device" despite free space
+- `df -i` shows 100% IUse
+
+**Fix:**
+- Delete unnecessary files
+- Increase inode count (reformat)
+- Use filesystem with dynamic inodes (XFS, Btrfs)
+
+## Filesystem Corruption
+
+### Signs of Corruption
+
+- `EXT4-fs error` in dmesg
+- `XFS (dm-0): Metadata corruption` messages
+- Files disappearing
+- Cannot mount filesystem
+
+### Investigation
 
 ```bash
-# Per-device latency
-iostat -x 1 | awk '{print $1,$10,$11}'
+# Check kernel messages
+dmesg | grep -i "ext4\|xfs\|corrupt"
 
-# Per-process latency
-pidstat -d 1 5
+# Check filesystem
+fsck.ext4 -n /dev/sda1
 ```
 
-Next: [Storage Failure Scenarios & Recovery](./io-troubleshooting).
+### Recovery Steps
+
+1. **Unmount filesystem** (if possible)
+2. **Backup** (block-level if needed)
+3. **Run fsck** with repair
+4. **Restore from backup** if fsck fails
+5. **Check hardware** (bad disk?)
+
+## Performance Tuning
+
+### ext4 Tuning
+
+```bash
+# Disable journal (faster, less safe)
+tune2fs -O ^has_journal /dev/sda1
+
+# Increase journal size
+tune2fs -J size=512 /dev/sda1
+
+# Disable barriers (risky)
+mount -o barrier=0 /dev/sda1 /mnt
+```
+
+### XFS Tuning
+
+```bash
+# Increase log size
+xfs_admin -l size=512m /dev/sda1
+
+# Allocate inodes dynamically
+# (default, no tuning needed)
+```
+
+### Btrfs Tuning
+
+```bash
+# Enable compression
+mount -o compress=zstd /dev/sda1 /mnt
+
+# Disable COW for specific files
+chattr +C /path/to/file
+```
+
+## Best Practices
+
+1. **Choose right filesystem** - Based on workload
+2. **Monitor inode usage** - Prevent exhaustion
+3. **Regular fsck** - Catch corruption early
+4. **Use appropriate mount options** - Performance vs safety
+5. **Backup regularly** - Before problems occur
+
+:::warning Production Warning
+Filesystem corruption can cause data loss. Always have backups and test recovery procedures.
+:::
+
+## Next Steps
+
+Continue to [Storage Failure Scenarios & Recovery](./io-troubleshooting) for troubleshooting scenarios.
