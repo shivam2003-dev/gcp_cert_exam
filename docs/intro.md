@@ -1,3 +1,7 @@
+---
+slug: /
+---
+
 # Welcome to Cloud Certification Courses
 
 Welcome to our comprehensive library of cloud certification courses! 🎓
