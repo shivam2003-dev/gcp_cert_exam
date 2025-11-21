@@ -214,18 +214,73 @@ WantedBy=timers.target
 ### systemd-analyze
 
 ```bash
-# Total boot time
+# Total boot time - see overall boot performance
 systemd-analyze
+```
 
-# Time per service
+This shows:
+- Kernel time (time before systemd starts)
+- Userspace time (time systemd takes to start services)
+- Total boot time
+
+:::tip Boot Time Targets
+- **Desktop**: < 30 seconds is good
+- **Server**: < 15 seconds is good
+- **Embedded**: < 10 seconds is good
+
+If boot time exceeds these, investigate with the tools below.
+:::
+
+```bash
+# Time per service - see which services take longest
 systemd-analyze blame | head -20
+```
 
-# Critical path
+:::important Understanding blame Output
+The output shows services sorted by time taken:
+- Services at the top are the slowest
+- Times are cumulative (includes dependency wait time)
+- Look for services taking > 1 second - these are optimization targets
+
+Common slow services:
+- Network services waiting for network
+- Database services doing initialization
+- Services with slow `ExecStart` scripts
+:::
+
+```bash
+# Critical path - see the slowest chain of dependencies
 systemd-analyze critical-chain
+```
 
-# Dependency graph
+:::tip Critical Path Analysis
+The critical path shows the chain of services that determines total boot time. Even if individual services are fast, if they depend on each other sequentially, the total time adds up.
+
+The output shows:
+- Service name
+- Time when it started
+- Time it took to start
+- What it was waiting for
+
+This helps you identify dependency bottlenecks.
+:::
+
+```bash
+# Dependency graph - visualize service dependencies
 systemd-analyze dot multi-user.target | dot -Tsvg > boot.svg
 ```
+
+:::note Graph Visualization
+This creates a visual graph showing:
+- Which services depend on which
+- Service relationships
+- Potential optimization points
+
+Open the SVG in a browser to see the full dependency tree. Look for:
+- Long dependency chains
+- Services with many dependencies (bottlenecks)
+- Circular dependencies (problems!)
+:::
 
 ### Identifying Slow Services
 

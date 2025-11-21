@@ -14,21 +14,50 @@ vmstat -SM 1 5
 
 ### Key Columns
 
-| Column | Description |
-|--------|-------------|
-| `r` | Runnable processes |
-| `b` | Blocked processes |
-| `swpd` | Swap used (KB) |
-| `free` | Free memory (KB) |
-| `buff` | Buffer cache (KB) |
-| `cache` | Page cache (KB) |
-| `si` | Swap in (KB/s) |
-| `so` | Swap out (KB/s) |
-| `cs` | Context switches/sec |
-| `us` | User CPU % |
-| `sy` | System CPU % |
-| `id` | Idle CPU % |
-| `wa` | I/O wait % |
+Understanding vmstat output is essential for memory and system health monitoring. Each column tells you something important about system state.
+
+| Column | Description | What It Means |
+|--------|-------------|---------------|
+| `r` | Runnable processes | Processes ready to run but waiting for CPU. High = CPU saturation |
+| `b` | Blocked processes | Processes in uninterruptible sleep (usually I/O). High = I/O bottleneck |
+| `swpd` | Swap used (KB) | Total swap space in use. > 0 = memory pressure |
+| `free` | Free memory (KB) | Completely unused memory. Low = memory pressure |
+| `buff` | Buffer cache (KB) | Block device buffers (legacy, usually small) |
+| `cache` | Page cache (KB) | File data cache. Can be reclaimed if needed |
+| `si` | Swap in (KB/s) | Pages being read from swap. > 0 = active swapping (bad!) |
+| `so` | Swap out (KB/s) | Pages being written to swap. > 0 = memory pressure |
+| `cs` | Context switches/sec | How often CPU switches between processes. High = many processes |
+| `us` | User CPU % | Time spent in user space. High = application CPU usage |
+| `sy` | System CPU % | Time spent in kernel. High = kernel overhead (syscalls, interrupts) |
+| `id` | Idle CPU % | CPU doing nothing. Low = CPU busy |
+| `wa` | I/O wait % | CPU waiting for I/O. High = I/O bottleneck |
+
+:::important Interpreting vmstat Output
+**Healthy system:**
+- `free` > 10% of total RAM
+- `si` and `so` = 0 (no swapping)
+- `cache` growing (page cache working)
+- `wa` < 10% (not I/O bound)
+
+**Memory pressure:**
+- `free` approaching 0
+- `si` > 0 (swapping in - processes waiting for memory)
+- `so` > 0 (swapping out - kernel freeing memory)
+- `cache` shrinking (kernel reclaiming cache)
+
+**I/O problems:**
+- `b` > 0 (processes blocked on I/O)
+- `wa` > 20% (high I/O wait)
+- `si`/`so` might be high (swapping is I/O)
+:::
+
+:::warning Swap Activity
+If you see `si` or `so` > 0, you have a memory problem:
+- `si > 0`: Pages being swapped in (processes were swapped out, now need memory)
+- `so > 0`: Pages being swapped out (kernel is freeing memory)
+
+Sustained swap activity (both > 0) indicates severe memory pressure. The system is "thrashing" - spending more time swapping than working. This requires immediate attention.
+:::
 
 ### Interpreting Output
 

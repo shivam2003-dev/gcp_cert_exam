@@ -103,19 +103,46 @@ Journaling ensures filesystem consistency by:
 ### Journaling Modes (ext4)
 
 **data=ordered (default):**
-- Metadata journaled
-- Data written before metadata commit
+- Metadata journaled, data flushed before commit
 - Good balance of performance and safety
+- Ensures if you see a file, its data is on disk
+
+:::tip When to Use ordered Mode
+Use `ordered` mode for:
+- General-purpose filesystems
+- Most production workloads
+- When you need good performance with reasonable safety
+
+This is the default for good reason - it works well for most cases.
+:::
 
 **data=writeback:**
-- Only metadata journaled
-- Data may be written after metadata
+- Only metadata journaled, data may be after commit
 - Faster, less safe
+- Can cause files with zero length or corrupted data after crashes
+
+:::warning writeback Mode Risks
+`writeback` mode can cause:
+- Files appearing to exist but containing old/corrupted data
+- Zero-length files after crashes
+- Data loss (though filesystem structure remains intact)
+
+Only use if you can tolerate potential data loss and need maximum performance. Not recommended for databases or critical data.
+:::
 
 **data=journal:**
-- Data and metadata journaled
-- Safest, slowest
-- Rarely used
+- Data and metadata journaled (slow, safest)
+- Both file data and filesystem structure can be recovered
+- Significantly slower because every write goes through journal twice
+
+:::important When to Use data=journal
+Use `data=journal` for:
+- Critical data that cannot be lost
+- When you can tolerate lower performance
+- Small filesystems where the performance impact is acceptable
+
+Most production systems don't use this because the performance penalty is too high.
+:::
 
 ### Checking Journal Mode
 
