@@ -100,34 +100,89 @@
 ### tcpdump
 
 ```bash
-# Basic capture
+# Basic capture - see all traffic on interface
 sudo tcpdump -i eth0
+```
 
-# Filter by port
+:::tip Interface Selection
+Always specify an interface when possible. Using `-i any` captures on all interfaces, which can generate massive amounts of data on busy systems. Specifying an interface focuses on the traffic you need.
+:::
+
+```bash
+# Filter by port - see traffic on specific port
 sudo tcpdump -i eth0 port 443
 
-# Filter by host
+# Filter by host - see traffic to/from specific IP
 sudo tcpdump -i eth0 host 192.168.1.1
 
-# Filter by protocol
+# Filter by protocol - see specific protocol
 sudo tcpdump -i eth0 tcp
 sudo tcpdump -i eth0 udp
+```
 
-# Complex filters
+:::important Filtering Best Practices
+Always use filters when possible:
+- Reduces data volume (easier to analyze)
+- Less performance impact on the system
+- Focuses on relevant traffic
+- Makes analysis faster
+
+Common filter combinations:
+- `tcp port 80`: HTTP traffic
+- `udp port 53`: DNS traffic
+- `host 192.168.1.1 and port 443`: Specific host and port
+:::
+
+```bash
+# Complex filters - combine multiple conditions
 sudo tcpdump -i eth0 'tcp port 443 and host 192.168.1.1'
+```
 
-# Save to file
+:::note Filter Syntax
+tcpdump uses Berkeley Packet Filter (BPF) syntax. You can combine conditions with:
+- `and`: Both conditions must match
+- `or`: Either condition matches
+- `not`: Negate condition
+- Parentheses for grouping
+
+Example: `'(tcp port 80 or tcp port 443) and host 192.168.1.1'`
+:::
+
+```bash
+# Save to file - capture for later analysis
 sudo tcpdump -i any -w /tmp/capture.pcap
+```
 
-# Read from file
+:::important Packet Capture Files
+Saving to a file allows:
+- Analysis with Wireshark (GUI tool with powerful analysis)
+- Sharing with team members
+- Long-term capture without terminal output
+- Offline analysis
+
+The `.pcap` format is standard and can be read by many tools (Wireshark, tcpdump, tshark, etc.).
+:::
+
+```bash
+# Read from file - analyze captured packets
 tcpdump -r /tmp/capture.pcap
 
-# Verbose output
+# Verbose output - more detail
 sudo tcpdump -i eth0 -vvv
 
-# Show packet contents
+# Show packet contents - see actual data
 sudo tcpdump -i eth0 -X
 ```
+
+:::tip Output Options
+- `-v`: Basic verbosity (packet length, TTL)
+- `-vv`: More verbosity (IP options, TCP options)
+- `-vvv`: Maximum verbosity (full packet details)
+- `-X`: Show packet contents in hex and ASCII
+- `-XX`: Show packet contents including link layer
+
+Use `-X` or `-XX` when you need to see the actual data in packets (useful for debugging application protocols).
+:::
 
 ### ss (Socket Statistics)
 

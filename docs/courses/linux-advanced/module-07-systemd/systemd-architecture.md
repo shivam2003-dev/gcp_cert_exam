@@ -81,15 +81,37 @@ systemctl list-units --type=service --state=failed
 
 ### Socket Units
 
-Activate services on connection:
+Socket units enable on-demand service activation. Instead of services running continuously, they start only when a connection arrives.
 
 ```bash
-# List sockets
+# List sockets - see all socket units
 systemctl list-units --type=socket
+```
 
+:::important Socket Activation Benefits
+Socket activation provides:
+- **Resource efficiency**: Services only run when needed
+- **Faster boot**: Services don't need to start at boot
+- **Automatic restart**: If service crashes, socket remains active
+- **Parallel startup**: Multiple services can start simultaneously
+
+This is how systemd achieves fast boot times - services start on demand rather than all at boot.
+:::
+
+```bash
 # Socket activation
 # Service starts when socket receives connection
 ```
+
+:::tip How Socket Activation Works
+1. systemd creates and listens on the socket
+2. When a connection arrives, systemd accepts it
+3. systemd starts the associated service
+4. systemd hands the socket to the service
+5. Service handles the connection
+
+The client doesn't notice any delay - the connection is queued until the service is ready.
+:::
 
 ### Target Units
 
