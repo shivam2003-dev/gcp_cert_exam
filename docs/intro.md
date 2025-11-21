@@ -2,9 +2,9 @@
 slug: /
 ---
 
-# Welcome to Expert Certification Courses 🎓
+# Welcome to TechLearn Platform 🎓
 
-**Master cloud platforms, databases, and cutting-edge technologies with our comprehensive self-study courses.**
+**Master cloud platforms, databases, and cutting-edge technologies with our comprehensive learning materials.**
 
 Whether you're preparing for cloud certifications, mastering database internals, or advancing your technical skills, we provide production-grade courses designed by industry experts.
 
