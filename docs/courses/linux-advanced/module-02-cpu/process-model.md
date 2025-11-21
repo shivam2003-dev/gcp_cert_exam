@@ -140,16 +140,42 @@ cat /proc/sched_debug | grep csw
 - Only affects CPU time, not I/O
 
 ```bash
-# View nice value
+# View nice value - see current priority of processes
 ps -eo pid,ni,comm | head
+```
 
-# Set nice value
+:::note Understanding Nice Values
+The `ni` column shows the nice value. Negative values (like -10) mean higher priority. Positive values (like +10) mean lower priority. Most processes have nice value 0 (normal priority).
+:::
+
+```bash
+# Set nice value - start command with lower priority
 nice -n 10 <command>
-renice 10 <pid>
+```
 
-# Real-time priority
+This starts a command with nice value 10, meaning it will get less CPU time than normal processes. Useful for background tasks that shouldn't interfere with interactive work.
+
+```bash
+# Change nice value of running process
+renice 10 <pid>
+```
+
+:::important Renice Limitations
+You can only increase nice values (lower priority) without root. To decrease nice values (raise priority), you need root privileges. This prevents users from monopolizing CPU.
+:::
+
+```bash
+# Real-time priority - for time-critical tasks
 chrt -r -p 50 <pid>
 ```
+
+:::warning Real-Time Priority Danger
+Real-time priorities can starve normal processes. A misbehaving RT task can make the system unresponsive. Always:
+- Set CPU affinity for RT tasks
+- Use watchdog timers
+- Monitor RT task behavior
+- Limit RT task count
+:::
 
 ### Priority Classes
 
@@ -177,16 +203,42 @@ Binding processes to specific CPUs to:
 
 ### Setting Affinity
 
+CPU affinity pins processes to specific CPUs. This can improve performance by:
+- Reducing cache misses (data stays in CPU cache)
+- Improving NUMA locality (using local memory)
+- Isolating workloads (preventing interference)
+
 ```bash
-# View current affinity
+# View current affinity - see which CPUs process can run on
 taskset -cp <pid>
+```
 
-# Set affinity (CPUs 0,1)
+The output shows a CPU mask. For example, `pid 1234's current affinity list: 0-3` means the process can run on CPUs 0, 1, 2, or 3.
+
+```bash
+# Set affinity (CPUs 0,1) - restrict to specific CPUs
 taskset -cp 0,1 <pid>
+```
 
-# Start with affinity
+:::important Affinity Considerations
+Setting CPU affinity can help performance, but be careful:
+- Don't overload a single CPU
+- Consider NUMA topology (use CPUs on same NUMA node)
+- Monitor CPU utilization to ensure balanced load
+:::
+
+```bash
+# Start with affinity - set from the beginning
 taskset -c 0,1 <command>
 ```
+
+:::tip Production Use Cases
+CPU affinity is useful for:
+- Database servers (pin to specific CPUs)
+- Real-time applications (isolate from other workloads)
+- High-performance computing (minimize cache misses)
+- Virtualization (pin VMs to specific CPUs)
+:::
 
 ### systemd CPU Affinity
 
@@ -229,28 +281,101 @@ root hard nproc unlimited
 
 ### /proc/&lt;pid&gt;/
 
+The `/proc/<pid>/` directory is a goldmine of information about running processes. Every file in this directory provides real-time information about the process.
+
 ```bash
-# Command line
+# Command line - see how process was started
 cat /proc/<pid>/cmdline | tr '\0' ' '
+```
 
-# Environment
+:::note Null-Terminated Strings
+The `cmdline` file uses null bytes (`\0`) to separate arguments, not spaces. That's why we use `tr '\0' ' '` to make it readable. This preserves arguments that contain spaces.
+:::
+
+```bash
+# Environment - see environment variables passed to process
 cat /proc/<pid>/environ | tr '\0' '\n'
+```
 
-# Status
+:::tip Debugging Tip
+Environment variables often contain configuration, secrets, or paths. If a process isn't behaving as expected, check its environment - it might be missing a required variable or have an incorrect value.
+:::
+
+```bash
+# Status - human-readable process information
 cat /proc/<pid>/status
+```
 
-# Statistics
+This file contains formatted information including:
+- Process state (running, sleeping, zombie)
+- Memory usage (RSS, virtual memory)
+- Signal masks
+- Capabilities
+- Thread count
+
+```bash
+# Statistics - machine-readable process stats
 cat /proc/<pid>/stat
+```
 
-# Memory maps
+:::important stat File Format
+The `stat` file is a single line with space-separated fields. Field positions are fixed:
+- Field 1: PID
+- Field 2: Process name
+- Field 3: State
+- Field 14: User time
+- Field 15: System time
+- Field 22: Start time
+
+Use `man proc` for the complete field list. Scripts often parse this file for performance monitoring.
+:::
+
+```bash
+# Memory maps - see what memory the process is using
 cat /proc/<pid>/maps
+```
 
-# Open files
+:::tip Memory Analysis
+The `maps` file shows:
+- Virtual address ranges
+- Permissions (read, write, execute)
+- What each range maps to (file, heap, stack, anonymous)
+- Device and inode (for file-backed mappings)
+
+This is essential for debugging memory issues, finding memory leaks, or understanding why a process uses so much memory.
+:::
+
+```bash
+# Open files - see what files the process has open
 ls -l /proc/<pid>/fd/
+```
 
-# I/O statistics
+:::warning File Descriptor Leaks
+If you see many file descriptors, the process might have a leak. Each entry is a symlink to the actual file. You can see:
+- Regular files
+- Sockets (showing network connections)
+- Pipes
+- Device files
+
+High FD counts can cause "Too many open files" errors.
+:::
+
+```bash
+# I/O statistics - see disk I/O performed by process
 cat /proc/<pid>/io
 ```
+
+:::important I/O Monitoring
+This shows:
+- `rchar`: Characters read (from read() syscalls)
+- `wchar`: Characters written
+- `syscr`: Read syscalls
+- `syscw`: Write syscalls
+- `read_bytes`: Actual bytes read from storage
+- `write_bytes`: Actual bytes written to storage
+
+The difference between `rchar` and `read_bytes` shows page cache hits (data read from cache, not disk).
+:::
 
 ### Advanced Inspection
 
