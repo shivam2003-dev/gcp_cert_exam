@@ -2,159 +2,292 @@
 
 ## Deep Dive: System Calls
 
-### Syscall Table Inspection
+### System Call Numbers
+
+Each architecture defines syscall numbers:
 
 ```bash
 # x86_64 syscall numbers
-awk '$3 ~ /sys_/ {printf "%04d %s\n", NR-1, $3}' /usr/include/asm/unistd_64.h | head
+grep -E "^#define __NR_" /usr/include/asm/unistd_64.h | head -20
 
-# Map syscall numbers to names dynamically
-ausyscall --dump | head
+# Map number to name
+ausyscall 1    # Returns: write
+ausyscall 2    # Returns: open
+ausyscall 3    # Returns: close
 ```
 
-### Tracing Techniques
+### System Call Implementation
+
+**x86_64 Example:**
+```asm
+mov    $0, %rax        # Syscall number (read = 0)
+mov    $fd, %rdi       # First argument (file descriptor)
+mov    $buf, %rsi      # Second argument (buffer)
+mov    $len, %rdx      # Third argument (length)
+syscall                # Trap to kernel
+```
+
+The kernel dispatcher:
+1. Saves user registers
+2. Switches to kernel stack
+3. Looks up handler in syscall table
+4. Executes handler
+5. Restores registers
+6. Returns to user space
+
+## strace: System Call Tracer
+
+### Basic Usage
 
 ```bash
-# Trace only open/close/read/write
-strace -e trace=%file -p <pid>
+# Trace command execution
+strace ls /tmp
 
-# Count syscalls and latency
-strace -c -p <pid>
+# Trace running process
+strace -p <pid>
 
-# Capture slow syscalls for services
-systemd-run --scope -p CPUWeight=10 strace -T -tt -ff -o /tmp/httpd.strace systemctl restart httpd
+# Save output to file
+strace -o /tmp/trace.log <command>
 ```
 
-### Syscall Latency Budgeting
-
-- Identify syscalls exceeding SLO (e.g., `read` > 1ms)
-- Pair `strace -T` with `perf trace` for high-frequency events
+### Advanced Tracing
 
 ```bash
-perf trace -p <pid> --event=syscalls:sys_enter_write --max-stack=5
+# Trace with timestamps
+strace -t <command>
+
+# Trace with microsecond timestamps
+strace -tt <command>
+
+# Trace with relative timestamps
+strace -T <command>
+
+# Trace child processes
+strace -f <command>
+
+# Filter by syscall type
+strace -e trace=network <command>
+strace -e trace=file <command>
+strace -e trace=process <command>
 ```
 
-## Process Lifecycle Labs
-
-### Fork Bomb Defense
+### Performance Analysis
 
 ```bash
-# Limit user processes
-ulimit -u 4096
-vim /etc/security/limits.d/90-nproc.conf
+# Summary statistics
+strace -c <command>
+
+# Show time spent in syscalls
+strace -T <command>
+
+# Count syscalls
+strace -c -e trace=open,openat <command>
 ```
 
-### Zombie Hunting
+### Real-World Example: Debugging Slow Service
 
 ```bash
-ps -el | awk '$2 == "Z" {print}'
+# Trace service startup
+strace -ff -s 128 -o /tmp/service.strace systemctl restart myservice
 
-# Identify parent
-ps -o pid,ppid,state,cmd -p <zombie-pid>
-
-# Reap by restarting parent or sending SIGCHLD
-kill -s SIGCHLD <parent-pid>
+# Analyze slow syscalls
+grep -E "open|read|write" /tmp/service.strace | awk '{print $NF}' | sort | uniq -c | sort -rn
 ```
 
-### Signals in Practice
+## Process Lifecycle Deep Dive
+
+### fork() Internals
+
+**Copy-on-Write (COW):**
+- Parent and child initially share physical pages
+- Pages marked read-only
+- On write, kernel creates copy
+- Saves memory for large processes
 
 ```bash
-trap 'echo "Caught SIGTERM"' TERM
-sleep 600 &
-kill -TERM %1
+# Monitor fork operations
+strace -e trace=clone,fork,vfork -f <command>
+
+# Check COW behavior
+cat /proc/<pid>/smaps | grep -i cow
 ```
 
-## Boot Process Flow
+### execve() Process
 
-```
-UEFI → firmware init
-↓
-GRUB (bootloader) loads kernel + initramfs
-↓
-Kernel decompresses, initializes subsystems, mounts root
-↓
-Init system (systemd) PID 1
-↓
-Targets, services, sockets
-```
-
-### Boot Investigation Commands
+1. Load ELF binary
+2. Map segments (text, data, bss)
+3. Load dynamic linker
+4. Resolve symbols
+5. Jump to entry point
 
 ```bash
-# Boot time summary
-systemd-analyze
+# Trace execve
+strace -e trace=execve <command>
 
-# Critical path
-systemd-analyze critical-chain
-
-# Boot logs for previous boot
-journalctl -b -1 -p warning
+# Inspect ELF binary
+readelf -h <binary>
+ldd <binary>  # Show shared libraries
 ```
 
-## systemd Internals
-
-### Unit Anatomy
-
-```ini
-[Unit]
-Description=Custom Daemon
-After=network-online.target
-
-[Service]
-Type=notify
-ExecStart=/usr/local/bin/customd
-Restart=on-failure
-LimitNOFILE=65535
-
-[Install]
-WantedBy=multi-user.target
-```
-
-### Dependency Debugging
+### Process Termination
 
 ```bash
-# Visual graph
-systemd-analyze dot multi-user.target | dot -Tsvg > boot.svg
+# Monitor exit
+strace -e trace=exit,exit_group <command>
 
-# Why is a unit failing?
-systemctl status myservice.service -l
-journalctl -u myservice.service -b
+# Check exit status
+echo $?
+
+# Zombie processes
+ps aux | awk '$8 ~ /Z/ {print}'
 ```
 
-## Scheduling Work Internals
+## Process Inspection Tools
 
-- systemd launches services using `fork/exec`
-- Kernel scheduler (CFS) assigns CPU time
-- `nice` and `cgroup` weights influence vruntime
+### /proc Filesystem
 
 ```bash
-# Inspect unit cgroup
-systemd-cgls /system.slice/sshd.service
+# Process command line
+cat /proc/<pid>/cmdline | tr '\0' ' '
 
-# Adjust CPU shares
-systemctl set-property nginx.service CPUWeight=500
+# Environment
+cat /proc/<pid>/environ | tr '\0' '\n'
+
+# Open files
+ls -l /proc/<pid>/fd/
+
+# Memory mappings
+cat /proc/<pid>/maps
+
+# Status
+cat /proc/<pid>/status
+
+# I/O statistics
+cat /proc/<pid>/io
 ```
 
-## strace Incident Playbook
-
-1. Capture baseline strace when system is healthy
-2. During incident, strace misbehaving PID
-3. Compare syscall mix and latency
-4. Identify blocking resources (files, sockets, futexes)
+### ps Deep Dive
 
 ```bash
-# Identify futex contention
-strace -p <pid> -e trace=futex -T
+# Detailed process info
+ps -eo pid,ppid,cmd,%mem,%cpu,state,etime
 
-# Attach to hung process tree
-for pid in $(pgrep -P <parent>); do strace -p $pid & done
+# Thread view
+ps -eLf
+
+# Process tree
+ps -ejH
+
+# Custom format
+ps -eo pid,cmd,wchan:20,stat
 ```
 
-## Checklist
+## Signal Handling
 
-- [ ] Understand user vs kernel transitions
-- [ ] Comfortable tracing syscalls and interpreting output
-- [ ] Have boot-time troubleshooting procedure
-- [ ] Know how to inspect and patch systemd unit behavior
+### Signal Delivery
 
-Next module: [Process, CPU & Scheduling Internals](../module-02-cpu/process-model).
+1. Kernel receives signal (from process, hardware, or kernel)
+2. Checks signal mask (blocked signals deferred)
+3. Delivers to process
+4. Process handles via signal handler or default action
+
+```bash
+# Check pending signals
+cat /proc/<pid>/status | grep Sig
+
+# Block signals
+trap '' SIGTERM SIGINT
+
+# Custom signal handler
+trap 'echo "Caught SIGTERM"' SIGTERM
+```
+
+### Signal Masks
+
+```bash
+# View signal mask
+cat /proc/<pid>/status | grep SigBlk
+
+# Set signal mask in C
+sigprocmask(SIG_BLOCK, &mask, NULL);
+```
+
+## Process Limits
+
+### Resource Limits
+
+```bash
+# View limits
+ulimit -a
+
+# Per-process limits
+cat /proc/<pid>/limits
+
+# Set limits
+ulimit -n 4096  # File descriptors
+ulimit -u 1000  # Processes
+```
+
+### cgroups Limits
+
+```bash
+# CPU limit
+echo "50000 100000" > /sys/fs/cgroup/cpu.max
+
+# Memory limit
+echo "1G" > /sys/fs/cgroup/memory.max
+```
+
+## Production Scenarios
+
+### Scenario 1: Process Hanging on I/O
+
+```bash
+# Identify blocked process
+ps -eo pid,state,wchan,cmd | grep ' D '
+
+# Check what it's waiting for
+cat /proc/<pid>/wchan
+
+# Trace I/O operations
+strace -e trace=read,write -p <pid>
+```
+
+### Scenario 2: High Fork Rate
+
+```bash
+# Monitor fork rate
+pidstat -r 1 | grep -E "PID|fork"
+
+# Limit fork rate
+echo "user hard nproc 100" >> /etc/security/limits.conf
+```
+
+### Scenario 3: Zombie Process Accumulation
+
+```bash
+# Find zombies
+ps aux | awk '$8 ~ /Z/ {print $2, $3}'
+
+# Find parent
+ps -o pid,ppid,cmd -p <zombie_pid>
+
+# Reap zombies
+kill -CHLD <parent_pid>
+```
+
+## Best Practices
+
+1. **Use strace sparingly** - High overhead, use for debugging
+2. **Understand COW** - Helps optimize fork-heavy applications
+3. **Monitor process limits** - Prevent resource exhaustion
+4. **Handle signals properly** - Clean shutdowns, proper error handling
+5. **Inspect /proc regularly** - Rich debugging information
+
+:::tip Production Insight
+strace is your window into what processes are actually doing. Use it to understand why services are slow or failing.
+:::
+
+## Next Steps
+
+Continue to [Boot Sequence & Systemd Deep Dive](./boot-systemd) to understand how Linux boots and systemd works.

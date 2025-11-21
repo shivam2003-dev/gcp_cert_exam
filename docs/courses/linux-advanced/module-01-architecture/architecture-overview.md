@@ -1,124 +1,312 @@
 # Linux Architecture & Internals
 
+## Overview
+
+Understanding Linux architecture is fundamental to troubleshooting production systems. This module covers the separation between user and kernel space, how system calls bridge this gap, and the kernel's internal organization.
+
 ## User Space vs Kernel Space
 
-Linux isolates user applications from kernel code:
+Linux enforces a strict boundary between user applications and kernel code using hardware protection mechanisms.
 
-| Layer | Description | Tools |
-|-------|-------------|-------|
-| User Space | Processes, libraries, shells, services | `ps`, `ldd`, `strace` |
-| Kernel Space | Scheduler, memory manager, drivers, networking | `sysctl`, `/proc`, `perf` |
+### Protection Rings
 
-**Key Concepts**
-- **Ring 3 vs Ring 0**: x86 protection rings limit access to privileged instructions.
-- **Syscalls**: User code requests kernel services via `syscall` instruction.
-- **Context switches**: CPU switches between processes or kernel threads, saving registers and MMU state.
+On x86/x86_64 architecture:
+- **Ring 3 (User Mode)**: Where all user applications run
+- **Ring 0 (Kernel Mode)**: Where the kernel and device drivers execute
 
-### Inspecting Boundaries
+**Key Differences:**
 
-```bash
-# Show system call for `ls`
-strace -e trace=execve ls >/dev/null
+| Aspect | User Space | Kernel Space |
+|--------|------------|--------------|
+| **Memory Access** | Virtual addresses only | Can access physical memory |
+| **CPU Instructions** | Restricted set | Full instruction set |
+| **I/O Operations** | Must use syscalls | Direct hardware access |
+| **Interrupts** | Cannot handle | Handles all interrupts |
+| **Scheduling** | Scheduled by kernel | Runs in interrupt context or kernel threads |
 
-# Identify syscall table for architecture
-grep "sys_call_table" /boot/System.map-$(uname -r)
+### Why This Separation?
+
+1. **Security**: Prevents user programs from crashing the system
+2. **Stability**: Kernel bugs don't directly affect user programs
+3. **Hardware Protection**: Prevents unauthorized hardware access
+4. **Resource Management**: Kernel controls all system resources
+
+## System Calls: The Bridge
+
+System calls are the **only** way user programs can request kernel services.
+
+### How System Calls Work
+
+```
+User Process
+    ↓
+libc wrapper (e.g., read())
+    ↓
+Assembly: mov $0, %rax; syscall
+    ↓
+CPU trap to kernel (Ring 0)
+    ↓
+Kernel syscall handler
+    ↓
+Kernel performs operation
+    ↓
+Return value in %rax
+    ↓
+Back to user space (Ring 3)
 ```
 
-## System Call Flow
-
-1. User process invokes libc wrapper (e.g., `read()`)
-2. Wrapper places syscall number in `%rax` (x86_64) and arguments in registers
-3. `syscall` instruction traps into kernel
-4. Kernel dispatcher looks up handler in syscall table
-5. Kernel performs privileged operation
-6. Return value placed in `%rax`; control returns to user space
-
-### Tracing Syscalls
+### Common System Calls
 
 ```bash
-# Trace noisy service startup
-strace -ff -s 128 -o /tmp/ssh.strace systemctl restart sshd
+# List all syscalls for architecture
+ausyscall --dump | head -20
+```
 
-# Filter by specific PID
-strace -p <pid> -e trace=network
+**Categories:**
+- **File operations**: `open`, `read`, `write`, `close`, `stat`
+- **Process management**: `fork`, `execve`, `wait`, `exit`
+- **Network**: `socket`, `bind`, `connect`, `send`, `recv`
+- **Memory**: `mmap`, `munmap`, `brk`
+- **Signals**: `kill`, `sigaction`, `sigprocmask`
+
+### Inspecting System Calls
+
+```bash
+# Trace syscalls for a process
+strace -p <pid>
+
+# Count syscalls
+strace -c -p <pid>
+
+# Trace specific syscalls only
+strace -e trace=network -p <pid>
+strace -e trace=file -p <pid>
+```
+
+## Kernel Architecture Overview
+
+Linux uses a **monolithic kernel** with **loadable modules**.
+
+### Kernel Components
+
+1. **Process Scheduler** - Manages CPU time allocation
+2. **Memory Manager** - Virtual memory, paging, swapping
+3. **Virtual File System (VFS)** - Unified interface for filesystems
+4. **Network Stack** - TCP/IP, sockets, netfilter
+5. **Device Drivers** - Hardware abstraction
+6. **Security Modules** - SELinux, AppArmor, capabilities
+
+### Kernel Space Layout
+
+```
+Kernel Space (High Memory)
+├── Kernel Code (Text)
+├── Kernel Data
+├── Device Drivers
+├── Kernel Modules
+└── Kernel Stack (per process)
+
+User Space (Low Memory)
+├── Application Code
+├── Libraries (libc, etc.)
+├── Heap
+├── Stack
+└── Memory Mapped Files
 ```
 
 ## Process Lifecycle
 
-1. **fork()** – clones parent address space
-2. **execve()** – replaces image with new program
-3. **wait()** – parent waits for child exit
-4. **exit()** – process terminates, becomes zombie until waited
+### Process Creation
+
+1. **fork()** - Creates child process (copy of parent)
+   - Copies address space (Copy-on-Write)
+   - Shares file descriptors
+   - Returns 0 to child, PID to parent
+
+2. **execve()** - Replaces process image
+   - Loads new program
+   - Replaces memory segments
+   - Resets signal handlers
+
+3. **exit()** - Process termination
+   - Releases resources
+   - Sends SIGCHLD to parent
+   - Becomes zombie until parent calls wait()
+
+### Process States
 
 ```bash
-# Visualize process hierarchy
+# View process states
+ps -eo pid,state,comm | head
+
+# States:
+# R - Running or runnable
+# S - Interruptible sleep (waiting for event)
+# D - Uninterruptible sleep (usually I/O)
+# T - Stopped (by signal)
+# Z - Zombie (terminated, not reaped)
+```
+
+### Inspecting Process Lifecycle
+
+```bash
+# Follow process tree
 pstree -a -p
 
-# Track exec events with auditd
-audisp-targz -f /var/log/audit/audit.log | grep execve
+# Monitor fork/exec events
+strace -e trace=fork,execve,clone -f <command>
+
+# Check process limits
+cat /proc/<pid>/limits
 ```
 
-## Scheduler Overview
+## Signals and Interrupts
 
-- Linux uses **Completely Fair Scheduler (CFS)** for normal tasks
-- Scheduler maintains red-black tree ordered by virtual runtime
-- Periodically selects task with lowest vruntime
+### Signals (Software Interrupts)
+
+Signals are notifications sent to processes:
 
 ```bash
-# Inspect scheduler statistics
-cat /proc/sched_debug | head
+# List all signals
+kill -l
 
-# View per-CPU scheduler latency targets
-sysctl kernel.sched_latency_ns kernel.sched_min_granularity_ns
+# Common signals:
+# SIGTERM (15) - Graceful termination
+# SIGKILL (9)  - Immediate kill (cannot be caught)
+# SIGINT (2)   - Interrupt (Ctrl+C)
+# SIGSTOP (19) - Pause process
+# SIGCONT (18) - Resume process
 ```
 
-## Signals & Interrupts
-
-- **Signals**: software interrupts delivering events to processes (`SIGTERM`, `SIGKILL`)
-- **Hardware interrupts**: triggered by devices, handled by kernel interrupt handlers
+### Signal Handling
 
 ```bash
-# Pending and blocked signals
-cat /proc/$(pidof sshd)/status | egrep "Sig(Blk|Ign|Cgt)"
+# Send signal
+kill -TERM <pid>
 
-# Send custom signal
-kill -USR1 <pid>
+# Check signal masks
+cat /proc/<pid>/status | grep Sig
+
+# Block signals in script
+trap '' SIGTERM
 ```
 
-## Kernel Architecture
+### Hardware Interrupts
 
-- **Monolithic kernel** with loadable modules (`.ko`)
-- Subsystems: scheduler, MMU, VFS, block, net, security
-- Communication via function calls inside kernel; no message passing overhead
+Hardware interrupts are triggered by devices:
+
+```bash
+# View interrupt statistics
+cat /proc/interrupts | head
+
+# Check IRQ affinity
+cat /proc/irq/<irq_num>/smp_affinity
+```
+
+## Kernel Boot Process
+
+### Boot Sequence
+
+```
+1. BIOS/UEFI Firmware
+   ↓
+2. Bootloader (GRUB)
+   ↓
+3. Kernel Loading
+   ↓
+4. Kernel Initialization
+   ↓
+5. Init Process (systemd)
+   ↓
+6. User Space Services
+```
+
+### Kernel Initialization Phases
+
+1. **Early Boot**: CPU initialization, memory detection
+2. **Driver Loading**: Device discovery, driver initialization
+3. **Filesystem Mount**: Root filesystem mount
+4. **Init Process**: Launch PID 1 (systemd)
+
+### Inspecting Boot Process
+
+```bash
+# Kernel messages
+dmesg | head -50
+
+# Boot time analysis
+systemd-analyze
+systemd-analyze blame
+
+# Kernel parameters
+cat /proc/cmdline
+```
+
+## Kernel Modules
+
+Kernel modules extend kernel functionality without recompiling:
 
 ```bash
 # List loaded modules
-lsmod | head
+lsmod
 
-# Check module parameters
-modinfo vfio_pci | egrep "(filename|parm)"
+# Module information
+modinfo <module_name>
+
+# Load module
+modprobe <module_name>
+
+# Remove module
+modprobe -r <module_name>
+
+# Module parameters
+cat /sys/module/<module_name>/parameters/*
 ```
 
-## Key Filesystems
+## /proc and /sys Filesystems
 
-- `/proc` – pseudo-files exposing kernel internals
-- `/sys` – sysfs, configuration knobs for devices and kernel subsystems
-- `/dev` – device nodes representing block/char devices
+### /proc - Process Information
 
 ```bash
-# Explore process info
-ls /proc/$$
-cat /proc/$$/limits
-
-# Tune runtime parameters
-sudo sysctl -w kernel.printk="4 4 1 7"
+# Process-specific
+/proc/<pid>/cmdline    # Command line
+/proc/<pid>/environ    # Environment variables
+/proc/<pid>/fd/        # Open file descriptors
+/proc/<pid>/maps       # Memory mappings
+/proc/<pid>/status     # Process status
+/proc/<pid>/stat       # Process statistics
+/proc/<pid>/io         # I/O statistics
 ```
 
-## Takeaways
+### /sys - Kernel Configuration
 
-- Understand where code executes: user vs kernel
-- Syscalls are your window into kernel behavior—trace them during troubleshooting
-- `/proc` and `/sys` expose nearly all kernel internals without recompiling
-- Mastering scheduler concepts is mandatory before touching CPU tuning
+```bash
+# CPU information
+/sys/devices/system/cpu/
 
-Next up: [System Calls, Process Lifecycle & strace Labs](./syscalls-process).
+# Memory information
+/sys/devices/system/node/
+
+# Block devices
+/sys/block/
+
+# Network devices
+/sys/class/net/
+```
+
+## Key Takeaways
+
+1. **User/Kernel Boundary**: Strict separation enforced by hardware
+2. **System Calls**: Only way to access kernel services
+3. **Process Lifecycle**: fork → execve → exit
+4. **Signals**: Software interrupts for process communication
+5. **Kernel Modules**: Extend kernel without recompilation
+6. **/proc and /sys**: Windows into kernel internals
+
+:::tip Production Insight
+Understanding the user/kernel boundary helps you understand why certain operations require privileges and why some debugging tools need root access.
+:::
+
+## Next Steps
+
+Continue to [System Calls, Process Lifecycle & strace Labs](./syscalls-process) for hands-on system call tracing.
