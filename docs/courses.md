@@ -8,6 +8,10 @@ import CourseCard from '@site/src/components/CourseCard';
 
 <CourseCard />
 
+---
+
+**Note:** To add a new course, see the [Course Addition Guide](../COURSE_ADDITION_GUIDE.md) for detailed instructions.
+
 ## How to Use These Courses
 
 1. **Select a Course** - Click on any course card above to access the course materials
