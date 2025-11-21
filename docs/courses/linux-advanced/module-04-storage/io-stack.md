@@ -260,17 +260,54 @@ io_getevents(ctx, 1, 1, &event, NULL);
 
 ### iostat
 
-```bash
-# Basic usage
-iostat -x 1 5
+`iostat` is the primary tool for monitoring I/O performance. It shows both device-level and system-wide I/O statistics.
 
-# Key metrics:
-# r/s, w/s - Read/write ops per second
-# rkB/s, wkB/s - Throughput
-# await - Average wait time
-# svctm - Service time
-# %util - Utilization
+```bash
+# Basic usage - extended statistics, update every 1 second, 5 times
+iostat -x 1 5
 ```
+
+:::important Understanding iostat Metrics
+
+**Operations:**
+- `r/s`: Read operations per second
+- `w/s`: Write operations per second
+- `rkB/s`: Read throughput (KB/s)
+- `wkB/s`: Write throughput (KB/s)
+
+**Latency:**
+- `await`: Average time (ms) for I/O requests to complete (includes queue time)
+- `svctm`: Average service time (ms) - actual I/O time (excludes queue time)
+- `r_await`: Average read wait time
+- `w_await`: Average write wait time
+
+**Utilization:**
+- `%util`: Percentage of time device was busy (0-100%)
+- `%util = 100%` means device is saturated
+
+**Queue:**
+- `avgqu-sz`: Average queue length
+- High queue length indicates I/O bottleneck
+:::
+
+:::warning Interpreting %util
+`%util` can be misleading:
+- For SSDs: `%util = 100%` usually means saturation
+- For HDDs with many spindles: `%util` can be > 100% (multiple operations in parallel)
+- Always check `await` and `svctm` together with `%util`
+:::
+
+:::tip Performance Indicators
+**Healthy I/O:**
+- `await` < `svctm` * 2 (low queue time)
+- `%util` < 80% (not saturated)
+- `svctm` reasonable for device type (SSD: < 1ms, HDD: < 10ms)
+
+**I/O Problems:**
+- `await` >> `svctm` (high queue time, device busy)
+- `%util` = 100% (device saturated)
+- High `svctm` (slow device or driver issues)
+:::
 
 ### iotop
 

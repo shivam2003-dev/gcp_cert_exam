@@ -44,16 +44,56 @@ Virtual Address → Page Table → Physical Address
 
 ### Inspecting Virtual Memory
 
+Understanding how processes use virtual memory is essential for debugging memory issues, finding leaks, and optimizing memory usage.
+
 ```bash
-# Process memory map
+# Process memory map - see all memory regions
 cat /proc/<pid>/maps
+```
 
-# Detailed mapping
+:::note Understanding maps Output
+Each line shows a memory region:
+- Address range (start-end)
+- Permissions (r=read, w=write, x=execute, p=private, s=shared)
+- Offset (for file-backed mappings)
+- Device (major:minor)
+- Inode (for file-backed mappings)
+- Pathname (file path, or [heap], [stack], [vdso], etc.)
+
+This tells you exactly what memory the process is using and where it comes from.
+:::
+
+```bash
+# Detailed mapping - human-readable format with sizes
 pmap -x <pid>
+```
 
-# Memory segments
+:::tip Memory Analysis
+`pmap` provides a cleaner view than raw `/proc/<pid>/maps`. It shows:
+- Total virtual memory size
+- Resident Set Size (RSS) - actual RAM used
+- Dirty pages
+- Mapped files
+
+Use this to understand why a process uses so much memory.
+:::
+
+```bash
+# Memory segments - extremely detailed breakdown
 cat /proc/<pid>/smaps
 ```
+
+:::important smaps Deep Dive
+`smaps` provides per-segment information including:
+- `Size`: Virtual size
+- `Rss`: Resident Set Size (in RAM)
+- `Pss`: Proportional Set Size (shared memory divided by sharing count)
+- `Shared_Clean/Shared_Dirty`: Shared pages
+- `Private_Clean/Private_Dirty`: Private pages
+- `Swap`: Swapped out pages
+
+`Pss` is particularly useful - it shows "fair share" of memory when accounting for shared libraries.
+:::
 
 ## Memory Management Unit (MMU)
 
@@ -104,18 +144,48 @@ cat /proc/<pid>/stat | awk '{print $12, $13}'
 
 ### Inspecting Swap Usage
 
+Swap usage is a critical metric. High swap activity indicates memory pressure and can severely degrade performance.
+
 ```bash
-# Swap usage
+# Swap usage - see current swap utilization
 free -h
 swapon --show
+```
 
-# Swap activity
+:::warning Swap Performance Impact
+Swap is 100-1000x slower than RAM. Even a small amount of swapping can cause severe performance degradation. If you see swap being used, you have a memory problem that needs immediate attention.
+:::
+
+```bash
+# Swap activity - monitor swap in/out rates
 vmstat 1 5
-# si = swap in, so = swap out
+# si = swap in (pages/sec)
+# so = swap out (pages/sec)
+```
 
-# Per-process swap
+:::important Interpreting Swap Activity
+- `si > 0`: Pages being swapped in (processes waiting for memory)
+- `so > 0`: Pages being swapped out (kernel freeing memory)
+- Both > 0: Active swapping (severe memory pressure)
+- High values: System is thrashing (spending more time swapping than working)
+
+If you see sustained swap activity, add more RAM or reduce memory usage immediately.
+:::
+
+```bash
+# Per-process swap - see which processes are swapped
 cat /proc/<pid>/status | grep VmSwap
 ```
+
+:::tip Finding Memory Hogs
+Processes using swap are candidates for investigation. They might:
+- Have memory leaks
+- Need more memory allocated
+- Be misconfigured (wrong memory limits)
+- Be victims of memory pressure (swapped out by kernel)
+
+Check these processes first when investigating memory issues.
+:::
 
 ## Page Cache
 
