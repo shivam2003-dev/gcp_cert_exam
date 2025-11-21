@@ -227,7 +227,7 @@ root hard nproc unlimited
 
 ## Process Inspection
 
-### /proc/<pid>/
+### /proc/&lt;pid&gt;/
 
 ```bash
 # Command line
