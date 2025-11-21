@@ -11,23 +11,54 @@ Swapping happens when:
 
 ### Swappiness
 
-**swappiness** controls preference for swap vs page cache eviction:
+**swappiness** is one of the most misunderstood kernel parameters. It controls the kernel's preference between swapping anonymous pages (heap, stack) versus reclaiming page cache (file data in memory).
 
+**How it works:**
 - Range: 0-100
 - Default: 60
-- Lower = prefer reclaim over swap
-- Higher = prefer swap over reclaim
+- Lower values (0-10): Prefer reclaiming page cache, avoid swapping
+- Higher values (50-100): More willing to swap anonymous pages
+
+:::important What Swappiness Actually Controls
+Swappiness doesn't directly control "how much to swap." Instead, it influences the kernel's decision when memory pressure occurs:
+- Low swappiness: Kernel will aggressively reclaim page cache before swapping
+- High swappiness: Kernel will swap anonymous pages more readily
+
+The kernel still tries to avoid swapping - swappiness just changes the threshold at which it gives up and starts swapping.
+:::
 
 ```bash
-# Check current value
+# Check current value - see current swappiness setting
 cat /proc/sys/vm/swappiness
+```
 
-# Set swappiness
+```bash
+# Set swappiness - change the preference
 sysctl vm.swappiness=10
+```
 
-# Make persistent
+:::tip Choosing Swappiness Values
+- **Servers with plenty of RAM**: `10` - Prefer keeping pages in RAM, reclaim cache when needed
+- **Databases**: `1` - Minimize swap at all costs (swap kills database performance)
+- **Desktop systems**: `60` - Default is acceptable for interactive use
+- **Systems with limited RAM**: Might need `30-50` to balance cache vs swap
+
+The key insight: If you have enough RAM, lower swappiness. If you're constantly running out of RAM, you need more RAM, not higher swappiness.
+:::
+
+```bash
+# Make persistent - ensure setting survives reboot
 echo 'vm.swappiness=10' > /etc/sysctl.d/99-swappiness.conf
 ```
+
+:::warning Swappiness Misconceptions
+Common mistakes:
+- "Swappiness=0 disables swap" - FALSE. It just makes the kernel very reluctant to swap.
+- "Higher swappiness = more swap used" - Not necessarily. It changes preference, not guarantee.
+- "Swappiness affects swap speed" - FALSE. It only affects when swapping happens, not how fast.
+
+The only way to truly disable swap is to not have swap space configured.
+:::
 
 ### Tuning Guidelines
 

@@ -55,13 +55,40 @@ sysctl kernel.sched_min_granularity_ns=500000
 
 ### /proc/sched_debug
 
-```bash
-# Dump scheduler state
-cat /proc/sched_debug | head -100
+The `/proc/sched_debug` file provides detailed information about the scheduler's internal state. This is invaluable for understanding why processes aren't getting CPU time or why the system feels slow.
 
-# Per-CPU run queues
+```bash
+# Dump scheduler state - see complete scheduler information
+cat /proc/sched_debug | head -100
+```
+
+:::important Understanding sched_debug Output
+This file contains:
+- Per-CPU run queue information
+- Task scheduling statistics
+- Load balancing information
+- Scheduler domain information
+
+The output is dense but contains everything about how the scheduler is working. Use it when you need to understand deep scheduling issues.
+:::
+
+```bash
+# Per-CPU run queues - see what's queued on each CPU
 grep -A10 "cpu#0" /proc/sched_debug
 ```
+
+:::tip Run Queue Analysis
+For each CPU, you'll see:
+- Number of runnable tasks
+- Load (weighted task count)
+- Scheduler domain information
+
+High run queue lengths indicate CPU saturation. If all CPUs have long queues, you need more CPUs or fewer tasks.
+:::
+
+:::warning sched_debug Overhead
+Reading `/proc/sched_debug` can be expensive on systems with many CPUs or tasks. The kernel must gather information from all CPUs and tasks. Use it for debugging, not continuous monitoring.
+:::
 
 ### /proc/schedstat
 
@@ -92,15 +119,57 @@ cat /proc/<pid>/sched
 
 ### Load Average
 
+Load average is one of the most important metrics for understanding system health. It represents the average number of processes that are either running or waiting to run.
+
 ```bash
 uptime
 # Shows: 1min, 5min, 15min averages
-
-# Interpretation:
-# load < CPU_count: OK
-# load = CPU_count: Fully utilized
-# load > CPU_count: Overloaded
 ```
+
+:::important Understanding Load Average
+Load average shows three numbers:
+- **1 minute average**: Recent load (most responsive to current conditions)
+- **5 minute average**: Medium-term trend
+- **15 minute average**: Long-term trend
+
+**What it measures:**
+- Processes currently running on CPU
+- Processes waiting for CPU (runnable but not running)
+- Processes in uninterruptible sleep (waiting for I/O)
+
+**What it doesn't measure:**
+- Processes sleeping (waiting for events, not I/O)
+- Processes stopped
+:::
+
+**Interpretation:**
+
+```bash
+# load < CPU_count: OK - system has capacity
+# load = CPU_count: Fully utilized - no spare capacity
+# load > CPU_count: Overloaded - processes waiting for CPU
+```
+
+:::tip Load Average Guidelines
+- **Load < 0.7 × CPU count**: System is idle, plenty of capacity
+- **Load = CPU count**: System is fully utilized, but handling load
+- **Load = 1.5 × CPU count**: System is overloaded, some processes waiting
+- **Load > 2 × CPU count**: Severe overload, significant wait times
+
+For a 4-core system:
+- Load 2.0: 50% utilized, healthy
+- Load 4.0: 100% utilized, at capacity
+- Load 8.0: 200% utilized, severely overloaded
+:::
+
+:::warning Load Average Misconceptions
+Common mistakes:
+- "Load 1.0 is always bad" - FALSE. On a 1-core system, yes. On a 32-core system, load 1.0 means 97% idle.
+- "High load always means CPU problem" - FALSE. High load can be from I/O wait (processes in D state).
+- "Load should always be low" - FALSE. High load is fine if processes are making progress.
+
+Always compare load to CPU count, and check what processes are in what state.
+:::
 
 ### top / htop
 
@@ -191,19 +260,82 @@ perf stat -a -A <command>
 
 ### Creating Flame Graphs
 
+Flame graphs are visual representations of where CPU time is spent. They're one of the most powerful tools for performance analysis, showing you exactly which functions are consuming CPU.
+
 ```bash
-# Record
+# Record - capture call stacks at 99Hz for 60 seconds
 perf record -F 99 -a -g -- sleep 60
+```
 
-# Generate script
+:::important Sampling Frequency Explained
+- `-F 99`: Sample 99 times per second (99Hz). This means perf interrupts the CPU 99 times per second to capture the call stack
+- Higher frequency = more detail but more overhead
+- 99Hz is a good balance - high enough for detail, low enough for production use
+- `-a`: Profile all CPUs (system-wide)
+- `-g`: Capture call graphs (see full function call chains, not just top-level functions)
+- `-- sleep 60`: Profile for 60 seconds
+
+The `--` separates perf options from the command to profile.
+:::
+
+```bash
+# Generate script - convert binary perf data to text format
 perf script > out.perf
+```
 
-# Fold
+This converts the binary perf data file into a text format that can be processed by other tools. The output contains one line per sample, showing the call stack at that moment.
+
+```bash
+# Fold - collapse call stacks into single lines
 stackcollapse-perf.pl out.perf > out.folded
+```
 
-# Generate SVG
+:::note Stack Collapsing Process
+The stackcollapse script converts multi-line call stacks into single lines. For example:
+```
+main
+  function1
+    function2
+```
+Becomes: `main;function1;function2`
+
+This format is required by the flame graph generator. Each line represents one call path through the code, and the script counts how many times each path was sampled.
+:::
+
+```bash
+# Generate SVG - create the visual flame graph
 flamegraph.pl out.folded > cpu-flame.svg
 ```
+
+:::tip Reading Flame Graphs
+Flame graphs are read from bottom to top:
+- **Bottom**: Entry point (main function)
+- **Top**: Leaf functions (where CPU time is actually spent)
+- **Width**: Time spent in that function (wider = more CPU time)
+- **Height**: Call stack depth (deeper = more function calls in the chain)
+- **Color**: Random (for visual distinction, not meaningful)
+
+**How to use:**
+1. Look for wide functions at any level - these are your CPU hotspots
+2. Click on a function to zoom in and see what it calls
+3. Look for "plateaus" - wide sections indicate functions taking significant time
+4. Compare before/after optimizations to see improvements
+
+**Common patterns:**
+- Wide base: Main function taking time (might be I/O wait)
+- Wide middle: Specific function is the bottleneck
+- Wide top: Leaf function is expensive (good optimization target)
+:::
+
+:::warning Production Profiling Overhead
+Profiling with `perf` has overhead (typically 1-5%):
+- Keep sampling frequency reasonable (50-100Hz for production)
+- Profile for short periods (30-60 seconds) during known issues
+- Use during performance problems, not continuously
+- For continuous monitoring, use lower-frequency sampling or other tools
+
+High-frequency profiling (1000Hz+) can significantly impact performance.
+:::
 
 ### Reading Flame Graphs
 
