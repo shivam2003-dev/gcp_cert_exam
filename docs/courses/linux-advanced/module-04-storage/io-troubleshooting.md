@@ -14,14 +14,37 @@
 
 **Step 1: Identify Blocked Processes**
 
-```bash
-# Find D state processes
-ps -eo pid,state,wchan,cmd | grep ' D '
+When processes are stuck in D state, they're waiting for I/O operations to complete. This is often the first sign of storage problems.
 
-# Check what they're waiting for
+```bash
+# Find D state processes - these are blocked on I/O
+ps -eo pid,state,wchan,cmd | grep ' D '
+```
+
+:::important Understanding D State
+Processes in D state (uninterruptible sleep) are:
+- Waiting for I/O operations (disk, network storage)
+- Cannot be killed (even SIGKILL won't work)
+- Blocking the system if there are many of them
+
+This is different from S state (interruptible sleep) where processes can be woken by signals.
+:::
+
+```bash
+# Check what they're waiting for - see the kernel function
 cat /proc/<pid>/wchan
 # Common: io_schedule, blkdev_issue_flush, etc.
 ```
+
+:::tip Understanding wchan
+The `wchan` (wait channel) shows the kernel function the process is waiting in:
+- `io_schedule`: Waiting for I/O
+- `blkdev_issue_flush`: Waiting for disk flush
+- `futex_wait_queue_me`: Waiting on lock (not I/O)
+- `poll_schedule_timeout`: Waiting in poll/select
+
+If you see I/O-related functions, the storage subsystem is the problem.
+:::
 
 **Step 2: Check I/O Statistics**
 
