@@ -124,4 +124,3 @@ Contributions, issues, and feature requests are welcome!
 - Always refer to official Google Cloud documentation for production deployments
 - Exam content may change; verify current exam guide before taking the exam
 - Practice questions are designed to test understanding, not replicate exact exam questions
-
