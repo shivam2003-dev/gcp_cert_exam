@@ -183,6 +183,12 @@ const sidebars = {
       items: [
         'courses/postgres-advanced/module-02-planner/intro',
         'courses/postgres-advanced/module-02-planner/planner-basics',
+        'courses/postgres-advanced/module-02-planner/explain-plans',
+        'courses/postgres-advanced/module-02-planner/index-types',
+        'courses/postgres-advanced/module-02-planner/statistics-analyze',
+        'courses/postgres-advanced/module-02-planner/slow-queries',
+        'courses/postgres-advanced/module-02-planner/anti-patterns',
+        'courses/postgres-advanced/module-02-planner/tuning-techniques',
       ],
     },
     {
@@ -190,6 +196,11 @@ const sidebars = {
       label: 'Module 3: Concurrency, Locks & Transactions',
       items: [
         'courses/postgres-advanced/module-03-transactions/intro',
+        'courses/postgres-advanced/module-03-transactions/lock-manager',
+        'courses/postgres-advanced/module-03-transactions/row-locking',
+        'courses/postgres-advanced/module-03-transactions/deadlocks',
+        'courses/postgres-advanced/module-03-transactions/isolation-levels',
+        'courses/postgres-advanced/module-03-transactions/lock-debugging',
       ],
     },
     {
@@ -197,6 +208,12 @@ const sidebars = {
       label: 'Module 4: Scaling PostgreSQL',
       items: [
         'courses/postgres-advanced/module-04-scaling/intro',
+        'courses/postgres-advanced/module-04-scaling/scaling-strategies',
+        'courses/postgres-advanced/module-04-scaling/streaming-replication',
+        'courses/postgres-advanced/module-04-scaling/logical-replication',
+        'courses/postgres-advanced/module-04-scaling/partitioning',
+        'courses/postgres-advanced/module-04-scaling/sharding',
+        'courses/postgres-advanced/module-04-scaling/connection-pooling',
       ],
     },
     {
@@ -204,6 +221,11 @@ const sidebars = {
       label: 'Module 5: High Availability & Disaster Recovery',
       items: [
         'courses/postgres-advanced/module-05-ha-dr/intro',
+        'courses/postgres-advanced/module-05-ha-dr/ha-architectures',
+        'courses/postgres-advanced/module-05-ha-dr/replication-setup',
+        'courses/postgres-advanced/module-05-ha-dr/patroni',
+        'courses/postgres-advanced/module-05-ha-dr/backups',
+        'courses/postgres-advanced/module-05-ha-dr/disaster-recovery',
       ],
     },
     {
@@ -211,6 +233,11 @@ const sidebars = {
       label: 'Module 6: Production Tuning & Configuration',
       items: [
         'courses/postgres-advanced/module-06-tuning/intro',
+        'courses/postgres-advanced/module-06-tuning/config-basics',
+        'courses/postgres-advanced/module-06-tuning/memory-tuning',
+        'courses/postgres-advanced/module-06-tuning/io-tuning',
+        'courses/postgres-advanced/module-06-tuning/cpu-tuning',
+        'courses/postgres-advanced/module-06-tuning/os-tuning',
       ],
     },
     {
@@ -218,6 +245,11 @@ const sidebars = {
       label: 'Module 7: Monitoring, Troubleshooting & Observability',
       items: [
         'courses/postgres-advanced/module-07-monitoring/intro',
+        'courses/postgres-advanced/module-07-monitoring/key-metrics',
+        'courses/postgres-advanced/module-07-monitoring/pg-stat-views',
+        'courses/postgres-advanced/module-07-monitoring/prometheus',
+        'courses/postgres-advanced/module-07-monitoring/log-analysis',
+        'courses/postgres-advanced/module-07-monitoring/troubleshooting',
       ],
     },
     {
@@ -225,6 +257,11 @@ const sidebars = {
       label: 'Module 8: PostgreSQL at Massive Scale',
       items: [
         'courses/postgres-advanced/module-08-high-scale/intro',
+        'courses/postgres-advanced/module-08-high-scale/designing-scale',
+        'courses/postgres-advanced/module-08-high-scale/hot-cold-data',
+        'courses/postgres-advanced/module-08-high-scale/bloat-management',
+        'courses/postgres-advanced/module-08-high-scale/partition-management',
+        'courses/postgres-advanced/module-08-high-scale/high-concurrency',
       ],
     },
   ],
