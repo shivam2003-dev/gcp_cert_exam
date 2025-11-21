@@ -1,157 +1,160 @@
 /**
- * Creating a sidebar enables you to:
- - create an ordered group of docs
- - render a sidebar for each doc of that group
- - provide next/previous navigation
-
- The sidebars can be generated from the filesystem, or explicitly defined here.
-
- Create as many sidebars as you want.
+ * Multi-Course Sidebar Configuration
+ * Each course has its own sidebar configuration
  */
 
 // @ts-check
+const courses = require('./courses.config');
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
-  tutorialSidebar: [
+  // Main courses index sidebar
+  coursesSidebar: [
     {
       type: 'doc',
-      id: 'intro',
+      id: 'courses',
+      label: 'All Courses',
+    },
+  ],
+
+  // GCP ACE Course Sidebar
+  gcpAceSidebar: [
+    {
+      type: 'doc',
+      id: 'courses/gcp-ace/intro',
       label: 'Course Introduction',
     },
     {
       type: 'category',
       label: 'Getting Started',
       items: [
-        '00-introduction/course-overview',
-        '00-introduction/exam-strategy',
-        '00-introduction/learning-path',
+        'courses/gcp-ace/00-introduction/course-overview',
+        'courses/gcp-ace/00-introduction/exam-strategy',
+        'courses/gcp-ace/00-introduction/learning-path',
       ],
     },
     {
       type: 'category',
       label: 'Module 1: Setting Up Cloud Solution Environment',
       items: [
-        '01-setup/overview',
-        '01-setup/projects-billing',
-        '01-setup/apis-services',
-        '01-setup/gcloud-sdk',
-        '01-setup/practice',
+        'courses/gcp-ace/01-setup/overview',
+        'courses/gcp-ace/01-setup/projects-billing',
+        'courses/gcp-ace/01-setup/apis-services',
+        'courses/gcp-ace/01-setup/gcloud-sdk',
+        'courses/gcp-ace/01-setup/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 2: Identity & Access Management (IAM)',
       items: [
-        '02-iam/overview',
-        '02-iam/iam-fundamentals',
-        '02-iam/service-accounts',
-        '02-iam/iam-roles-policies',
-        '02-iam/organization-policies',
-        '02-iam/practice',
+        'courses/gcp-ace/02-iam/overview',
+        'courses/gcp-ace/02-iam/iam-fundamentals',
+        'courses/gcp-ace/02-iam/service-accounts',
+        'courses/gcp-ace/02-iam/iam-roles-policies',
+        'courses/gcp-ace/02-iam/organization-policies',
+        'courses/gcp-ace/02-iam/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 3: Networking Fundamentals',
       items: [
-        '03-networking/overview',
-        '03-networking/vpc-fundamentals',
-        '03-networking/firewall-rules',
-        '03-networking/load-balancing',
-        '03-networking/cloud-dns',
-        '03-networking/cloud-cdn',
-        '03-networking/practice',
+        'courses/gcp-ace/03-networking/overview',
+        'courses/gcp-ace/03-networking/vpc-fundamentals',
+        'courses/gcp-ace/03-networking/firewall-rules',
+        'courses/gcp-ace/03-networking/load-balancing',
+        'courses/gcp-ace/03-networking/cloud-dns',
+        'courses/gcp-ace/03-networking/cloud-cdn',
+        'courses/gcp-ace/03-networking/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 4: Compute Services',
       items: [
-        '04-compute/overview',
-        '04-compute/compute-engine',
-        '04-compute/gke-basics',
-        '04-compute/cloud-run',
-        '04-compute/app-engine',
-        '04-compute/cloud-functions',
-        '04-compute/practice',
+        'courses/gcp-ace/04-compute/overview',
+        'courses/gcp-ace/04-compute/compute-engine',
+        'courses/gcp-ace/04-compute/gke-basics',
+        'courses/gcp-ace/04-compute/cloud-run',
+        'courses/gcp-ace/04-compute/app-engine',
+        'courses/gcp-ace/04-compute/cloud-functions',
+        'courses/gcp-ace/04-compute/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 5: Storage Services',
       items: [
-        '05-storage/overview',
-        '05-storage/cloud-storage',
-        '05-storage/persistent-disks',
-        '05-storage/cloud-sql',
-        '05-storage/cloud-spanner',
-        '05-storage/firestore',
-        '05-storage/bigtable',
-        '05-storage/practice',
+        'courses/gcp-ace/05-storage/overview',
+        'courses/gcp-ace/05-storage/cloud-storage',
+        'courses/gcp-ace/05-storage/persistent-disks',
+        'courses/gcp-ace/05-storage/cloud-sql',
+        'courses/gcp-ace/05-storage/cloud-spanner',
+        'courses/gcp-ace/05-storage/firestore',
+        'courses/gcp-ace/05-storage/bigtable',
+        'courses/gcp-ace/05-storage/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 6: Managed Services & Databases',
       items: [
-        '06-managed-services/overview',
-        '06-managed-services/databases',
-        '06-managed-services/bigquery',
-        '06-managed-services/pub-sub',
-        '06-managed-services/cloud-endpoints',
-        '06-managed-services/practice',
+        'courses/gcp-ace/06-managed-services/overview',
+        'courses/gcp-ace/06-managed-services/bigquery',
+        'courses/gcp-ace/06-managed-services/pub-sub',
+        'courses/gcp-ace/06-managed-services/cloud-endpoints',
+        'courses/gcp-ace/06-managed-services/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 7: Monitoring, Logging & Operations',
       items: [
-        '07-operations/overview',
-        '07-operations/cloud-monitoring',
-        '07-operations/cloud-logging',
-        '07-operations/cloud-trace',
-        '07-operations/error-reporting',
-        '07-operations/cloud-debugger',
-        '07-operations/practice',
+        'courses/gcp-ace/07-operations/overview',
+        'courses/gcp-ace/07-operations/cloud-monitoring',
+        'courses/gcp-ace/07-operations/cloud-logging',
+        'courses/gcp-ace/07-operations/cloud-trace',
+        'courses/gcp-ace/07-operations/error-reporting',
+        'courses/gcp-ace/07-operations/cloud-debugger',
+        'courses/gcp-ace/07-operations/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 8: Security Best Practices',
       items: [
-        '08-security/overview',
-        '08-security/encryption',
-        '08-security/secret-manager',
-        '08-security/cloud-armor',
-        '08-security/binary-authorization',
-        '08-security/practice',
+        'courses/gcp-ace/08-security/overview',
+        'courses/gcp-ace/08-security/encryption',
+        'courses/gcp-ace/08-security/secret-manager',
+        'courses/gcp-ace/08-security/cloud-armor',
+        'courses/gcp-ace/08-security/binary-authorization',
+        'courses/gcp-ace/08-security/practice',
       ],
     },
     {
       type: 'category',
       label: 'Module 9: Deployment & CI/CD',
       items: [
-        '09-deployment/overview',
-        '09-deployment/cloud-build',
-        '09-deployment/deployment-manager',
-        '09-deployment/terraform-basics',
-        '09-deployment/cloud-source-repos',
-        '09-deployment/practice',
+        'courses/gcp-ace/09-deployment/overview',
+        'courses/gcp-ace/09-deployment/cloud-build',
+        'courses/gcp-ace/09-deployment/deployment-manager',
+        'courses/gcp-ace/09-deployment/terraform-basics',
+        'courses/gcp-ace/09-deployment/cloud-source-repos',
+        'courses/gcp-ace/09-deployment/practice',
       ],
     },
     {
       type: 'category',
       label: 'Practice Exams',
       items: [
-        '10-practice-exams/full-length-exam-1',
-        '10-practice-exams/full-length-exam-2',
-        '10-practice-exams/exam-1-answers',
-        '10-practice-exams/exam-2-answers',
+        'courses/gcp-ace/10-practice-exams/full-length-exam-1',
+        'courses/gcp-ace/10-practice-exams/full-length-exam-2',
+        'courses/gcp-ace/10-practice-exams/exam-1-answers',
+        'courses/gcp-ace/10-practice-exams/exam-2-answers',
       ],
     },
   ],
 };
 
 module.exports = sidebars;
-

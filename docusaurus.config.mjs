@@ -3,11 +3,12 @@
 
 const lightCodeTheme = require('prism-react-renderer').themes.github;
 const darkCodeTheme = require('prism-react-renderer').themes.dracula;
+const courses = require('./courses.config');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Google Cloud Associate Cloud Engineer (ACE) Certification Course',
-  tagline: 'Complete self-study course for the ACE certification exam',
+  title: 'Cloud Certification Courses',
+  tagline: 'Complete self-study courses for cloud certifications',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -58,22 +59,26 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'GCP ACE Course',
+        title: 'Cloud Cert Courses',
         logo: {
-          alt: 'Google Cloud Logo',
+          alt: 'Cloud Certification Logo',
           src: 'img/logo.svg',
         },
         items: [
           {
             type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            sidebarId: 'coursesSidebar',
             position: 'left',
-            label: 'Course Home',
+            label: 'All Courses',
           },
           {
-            href: 'https://cloud.google.com/certification/cloud-engineer',
-            label: 'Official Exam Guide',
-            position: 'right',
+            type: 'dropdown',
+            label: 'Courses',
+            position: 'left',
+            items: courses.map((course) => ({
+              label: course.shortName,
+              to: `/${course.path}/intro`,
+            })),
           },
           {
             href: 'https://github.com/shivam2003-dev/gcp_cert_exam',
@@ -86,32 +91,26 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Course',
-            items: [
-              {
-                label: 'Course Overview',
-                to: '/',
-              },
-              {
-                label: 'Exam Strategy',
-                to: '/00-introduction/exam-strategy',
-              },
-            ],
+            title: 'Courses',
+            items: courses.map((course) => ({
+              label: course.name,
+              to: `/${course.path}/intro`,
+            })),
           },
           {
             title: 'Resources',
             items: [
               {
-                label: 'Official ACE Exam Guide',
-                href: 'https://cloud.google.com/certification/cloud-engineer',
+                label: 'Google Cloud Certifications',
+                href: 'https://cloud.google.com/certification',
               },
               {
-                label: 'Google Cloud Documentation',
-                href: 'https://cloud.google.com/docs',
+                label: 'AWS Certifications',
+                href: 'https://aws.amazon.com/certification/',
               },
               {
-                label: 'Google Cloud Free Tier',
-                href: 'https://cloud.google.com/free',
+                label: 'Azure Certifications',
+                href: 'https://learn.microsoft.com/certifications/',
               },
             ],
           },
@@ -125,7 +124,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} GCP ACE Certification Course. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Cloud Certification Courses. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
@@ -136,4 +135,3 @@ const config = {
 };
 
 module.exports = config;
-
