@@ -47,16 +47,30 @@ find /proc/*/ns/pid -exec readlink {} \; | sort -u
 ### Using unshare
 
 ```bash
-# Create new namespaces
+# Create new namespaces - isolate this shell from the host
 sudo unshare --mount --uts --ipc --net --pid --fork /bin/bash
-
-# Inside namespace:
-# - New mount namespace
-# - New hostname
-# - New IPC namespace
-# - New network namespace
-# - New PID namespace (PID 1 in namespace)
 ```
+
+:::important Understanding unshare Flags
+Each flag creates a new namespace:
+- `--mount`: Separate mount namespace (can mount/unmount without affecting host)
+- `--uts`: Separate hostname/domain (can change hostname)
+- `--ipc`: Separate IPC namespace (separate shared memory, semaphores)
+- `--net`: Separate network namespace (separate network stack)
+- `--pid`: Separate PID namespace (processes get new PIDs, PID 1 in namespace)
+- `--fork`: Fork before executing command (required for PID namespace)
+
+Inside this namespace, you have complete isolation from the host system.
+:::
+
+:::note PID Namespace Special Case
+The PID namespace is special - the first process in a new PID namespace becomes PID 1. This process has special responsibilities:
+- Must reap zombie children (or they accumulate)
+- Receives orphaned processes
+- If it exits, all processes in the namespace are killed
+
+This is why containers need a proper init process or must handle these responsibilities.
+:::
 
 ### Making Mount Private
 

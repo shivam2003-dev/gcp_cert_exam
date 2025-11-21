@@ -96,15 +96,30 @@ top -b -n1 | head -20 >> /tmp/incident_snapshot.txt
 
 **For CPU Issues:**
 ```bash
-# Find CPU hogs
+# Find CPU hogs - identify processes consuming CPU
 top -b -n1 | head -20
 pidstat -u 1 5
+```
 
-# Profile with perf
+:::tip CPU Analysis Strategy
+When investigating CPU issues:
+1. Check load average vs CPU count (load > CPUs = overloaded)
+2. Identify top CPU consumers
+3. Check if it's user CPU (%usr) or system CPU (%sys)
+4. High %sys indicates kernel overhead (drivers, interrupts, syscalls)
+5. Profile with `perf` to find hot functions
+:::
+
+```bash
+# Profile with perf - see what code is consuming CPU
 perf top
 perf record -a -g sleep 10
 perf report
 ```
+
+:::important perf Overhead
+`perf` has much lower overhead than `strace` (typically < 5%). It's safe to use in production for short periods. Use sampling (default) rather than full tracing for lower overhead.
+:::
 
 **For Memory Issues:**
 ```bash

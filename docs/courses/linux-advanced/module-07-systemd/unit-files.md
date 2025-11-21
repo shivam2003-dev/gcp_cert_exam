@@ -93,11 +93,23 @@ WantedBy=multi-user.target
 ### [Service] Section
 
 **Type:**
-- `simple`: Default, service runs in foreground
-- `forking`: Service forks, parent exits
-- `oneshot`: Runs once and exits
-- `notify`: Service sends notification when ready
-- `dbus`: Service registers on D-Bus
+
+The service type determines how systemd tracks when the service is ready:
+
+- **`simple`**: Default, service runs in foreground. systemd considers the service started immediately after `ExecStart` returns. Use when the service doesn't fork.
+- **`forking`**: Service forks, parent exits. systemd waits for the parent to exit, then considers the child the main process. Use for traditional daemons.
+- **`oneshot`**: Runs once and exits. systemd waits for the process to exit before considering the service started. Use for setup scripts.
+- **`notify`**: Service sends notification when ready. The service must call `sd_notify()` to tell systemd it's ready. Most modern services support this.
+- **`dbus`**: Service registers on D-Bus. systemd waits for the service to acquire its D-Bus name. Use for D-Bus services.
+
+:::important Choosing Service Type
+Choosing the wrong type causes:
+- Services marked as "started" before they're actually ready
+- systemd not tracking the correct process
+- Dependencies starting before the service is ready
+
+Always use `notify` if your service supports it - it's the most reliable.
+:::
 
 **ExecStart:**
 - Command to start service
@@ -117,13 +129,28 @@ WantedBy=multi-user.target
 - Default: `kill -TERM $MAINPID`
 
 **Restart:**
-- `no`: Don't restart
-- `on-success`: Restart on success
-- `on-failure`: Restart on failure
-- `on-abnormal`: Restart on abnormal exit
-- `on-watchdog`: Restart on watchdog timeout
-- `on-abort`: Restart on abort
-- `always`: Always restart
+
+The restart policy determines when systemd should restart a failed service:
+
+- **`no`**: Don't restart. Service runs once, if it exits, it stays stopped.
+- **`on-success`**: Restart only if service exits with success (exit code 0). Rarely used.
+- **`on-failure`**: Restart if service exits with failure (non-zero exit code) or is killed by a signal. This is the most common setting.
+- **`on-abnormal`**: Restart on abnormal exit (killed by signal, watchdog timeout, etc.) but not on normal exit. Useful for services that should run continuously.
+- **`on-watchdog`**: Restart only if watchdog timeout occurs. Requires `WatchdogSec` to be set.
+- **`on-abort`**: Restart only if service is aborted (SIGABRT). Rarely used.
+- **`always`**: Always restart, regardless of exit reason. Use for services that must always be running.
+
+:::warning Restart Loops
+If a service keeps failing immediately after restart, systemd will stop restarting it after `StartLimitBurst` attempts within `StartLimitIntervalSec`. Check logs to find why it's failing, don't just increase the limits.
+:::
+
+:::tip Production Best Practice
+For production services, use `Restart=on-failure` with `RestartSec=5`. This:
+- Restarts on failures (bugs, crashes)
+- Doesn't restart on clean shutdowns
+- Gives the service time to clean up before restart
+- Prevents restart storms
+:::
 
 **RestartSec:**
 - Seconds to wait before restart
