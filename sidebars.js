@@ -265,6 +265,103 @@ const sidebars = {
       ],
     },
   ],
+  linuxAdvancedSidebar: [
+    {
+      type: 'doc',
+      id: 'courses/linux-advanced/intro',
+      label: 'Course Introduction',
+    },
+    {
+      type: 'category',
+      label: 'Module 1: Linux Architecture & Internals',
+      items: [
+        'courses/linux-advanced/module-01-architecture/architecture-overview',
+        'courses/linux-advanced/module-01-architecture/syscalls-process',
+        'courses/linux-advanced/module-01-architecture/boot-systemd',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 2: Process, CPU & Scheduling Internals',
+      items: [
+        'courses/linux-advanced/module-02-cpu/process-model',
+        'courses/linux-advanced/module-02-cpu/cpu-scheduler',
+        'courses/linux-advanced/module-02-cpu/cpu-troubleshooting',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 3: Memory Management & Tuning',
+      items: [
+        'courses/linux-advanced/module-03-memory/virtual-memory',
+        'courses/linux-advanced/module-03-memory/oom-swap',
+        'courses/linux-advanced/module-03-memory/memory-diagnostics',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 4: Storage & Filesystem Internals',
+      items: [
+        'courses/linux-advanced/module-04-storage/io-stack',
+        'courses/linux-advanced/module-04-storage/filesystems',
+        'courses/linux-advanced/module-04-storage/io-troubleshooting',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 5: Networking Internals',
+      items: [
+        'courses/linux-advanced/module-05-networking/network-stack',
+        'courses/linux-advanced/module-05-networking/packet-flow',
+        'courses/linux-advanced/module-05-networking/network-troubleshooting',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 6: Linux Containers & Namespaces',
+      items: [
+        'courses/linux-advanced/module-06-containers/namespaces-cgroups',
+        'courses/linux-advanced/module-06-containers/container-runtime',
+        'courses/linux-advanced/module-06-containers/resource-isolation',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 7: Systemd & Service Management',
+      items: [
+        'courses/linux-advanced/module-07-systemd/systemd-architecture',
+        'courses/linux-advanced/module-07-systemd/unit-files',
+        'courses/linux-advanced/module-07-systemd/boot-debugging',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 8: Observability & Troubleshooting',
+      items: [
+        'courses/linux-advanced/module-08-observability/incident-response',
+        'courses/linux-advanced/module-08-observability/log-analysis',
+        'courses/linux-advanced/module-08-observability/troubleshooting-playbooks',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 9: Performance Optimization & Hardening',
+      items: [
+        'courses/linux-advanced/module-09-performance/system-tuning',
+        'courses/linux-advanced/module-09-performance/kernel-parameters',
+        'courses/linux-advanced/module-09-performance/security-hardening',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Module 10: Production Failure Scenarios',
+      items: [
+        'courses/linux-advanced/module-10-failures/kernel-panic',
+        'courses/linux-advanced/module-10-failures/oom-storms',
+        'courses/linux-advanced/module-10-failures/io-network-failures',
+      ],
+    },
+  ],
 };
 
 module.exports = sidebars;
