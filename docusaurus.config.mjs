@@ -48,6 +48,7 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/shivam2003-dev/gcp_cert_exam/tree/main/',
           routeBasePath: '/',
+          homePageId: 'intro',
         },
         blog: false,
         theme: {
@@ -67,6 +68,7 @@ const config = {
         logo: {
           alt: 'Cloud Certification Logo',
           src: 'img/logo.svg',
+          href: '/intro',
         },
         items: [
           {

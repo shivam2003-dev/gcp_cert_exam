@@ -10,7 +10,7 @@ import CourseCard from '@site/src/components/CourseCard';
 
 ---
 
-**Note:** To add a new course, see the [Course Addition Guide](../COURSE_ADDITION_GUIDE.md) for detailed instructions.
+**Note:** To add a new course, see the [Course Addition Guide](https://github.com/shivam2003-dev/gcp_cert_exam/blob/main/COURSE_ADDITION_GUIDE.md) for detailed instructions.
 
 ## How to Use These Courses
 

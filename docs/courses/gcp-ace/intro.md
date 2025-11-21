@@ -106,7 +106,7 @@ The ACE exam tests your ability to perform tasks, not just memorize facts. Focus
 
 ## 🚀 Ready to Begin?
 
-Start with the [Course Overview](./00-introduction/course-overview) to understand the exam structure and your learning path.
+Start with the [Course Overview](./introduction/course-overview) to understand the exam structure and your learning path.
 
 Good luck with your certification journey! 🎉
 

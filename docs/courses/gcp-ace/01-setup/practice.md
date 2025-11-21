@@ -484,5 +484,5 @@ Your company wants to implement cost controls. You need to:
 - **Budgets** help control costs with alerts
 - **Billing accounts** must be linked for paid services
 
-Continue to [Module 2: Identity & Access Management](../02-iam/overview) to learn about IAM fundamentals.
+Continue to [Module 2: Identity & Access Management](../iam/overview) to learn about IAM fundamentals.
 

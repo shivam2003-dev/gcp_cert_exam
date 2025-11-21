@@ -38,5 +38,5 @@ Service account emails follow this format: `SA_NAME@PROJECT_ID.iam.gserviceaccou
 
 ## More questions coming soon...
 
-Continue to [Module 3: Networking Fundamentals](../03-networking/overview).
+Continue to [Module 3: Networking Fundamentals](../networking/overview).
 
