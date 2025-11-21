@@ -108,18 +108,53 @@ CLOSED
 
 ### TCP State Inspection
 
-```bash
-# All TCP connections
-ss -tan
+Understanding TCP connection states is essential for debugging network issues. Each state tells you where a connection is in its lifecycle.
 
-# By state
+```bash
+# All TCP connections - see every TCP socket
+ss -tan
+```
+
+:::note TCP State Machine
+TCP connections go through specific states:
+- `LISTEN`: Server waiting for connections
+- `SYN-SENT`: Client sent SYN, waiting for response
+- `SYN-RECV`: Server received SYN, sent SYN-ACK
+- `ESTABLISHED`: Connection active, data can flow
+- `FIN-WAIT-1/2`: Connection closing (one side sent FIN)
+- `CLOSE-WAIT`: Remote closed, local hasn't closed
+- `TIME-WAIT`: Connection closed, waiting for 2MSL (60 seconds default)
+- `CLOSED`: Connection fully closed
+:::
+
+```bash
+# By state - filter to see specific states
 ss -tan state established
 ss -tan state time-wait
 ss -tan state syn-recv
+```
 
-# With process info
+:::warning High SYN-RECV Count
+Many connections in `SYN-RECV` state indicates:
+- SYN flood attack (malicious)
+- Server not accepting connections fast enough (backlog full)
+- Network issues preventing ACK from reaching server
+
+This is a critical issue requiring immediate attention.
+:::
+
+```bash
+# With process info - see which process owns each connection
 ss -tanp
 ```
+
+:::important Security and Debugging
+The `-p` flag is essential for:
+- Identifying which process is using a port
+- Debugging "Address already in use" errors
+- Security audits (unexpected listening ports)
+- Understanding application network behavior
+:::
 
 ### TCP Parameters
 
@@ -142,20 +177,71 @@ sysctl net.ipv4.tcp_keepalive_intvl
 
 ### TCP Tuning
 
+TCP tuning is critical for high-performance network applications. The default Linux TCP settings are conservative and often need adjustment for production workloads.
+
 ```bash
-# Increase buffers
-sysctl net.core.rmem_max=134217728
-sysctl net.core.wmem_max=134217728
+# Increase buffers - allow larger TCP windows for better throughput
+sysctl net.core.rmem_max=134217728  # 128MB max receive buffer
+sysctl net.core.wmem_max=134217728  # 128MB max send buffer
+```
+
+:::important Buffer Sizing
+Larger buffers allow TCP to:
+- Absorb network bursts
+- Maintain high throughput on high-latency links
+- Reduce packet loss from buffer overflows
+
+However, larger buffers use more memory. Each connection can use up to the maximum buffer size.
+:::
+
+```bash
+# TCP receive/send buffer tuning - three values: min, default, max
 sysctl net.ipv4.tcp_rmem="4096 87380 134217728"
 sysctl net.ipv4.tcp_wmem="4096 65536 134217728"
+```
 
-# Fast open
+:::note TCP Buffer Auto-Tuning
+Linux automatically adjusts TCP buffer sizes between min and max based on:
+- Network conditions (latency, bandwidth)
+- Connection state
+- Available memory
+
+The kernel starts with the default value and grows/shrinks as needed, up to the maximum.
+:::
+
+```bash
+# Fast open - reduces connection establishment time
 sysctl net.ipv4.tcp_fastopen=3
+```
 
-# Congestion control
+:::tip TCP Fast Open
+TCP Fast Open (TFO) allows data to be sent in the initial SYN packet, reducing latency for subsequent connections. Values:
+- `0`: Disabled
+- `1`: Client only
+- `2`: Server only
+- `3`: Both client and server (recommended)
+
+Requires application support and kernel 3.7+.
+:::
+
+```bash
+# Congestion control - algorithm for managing network congestion
 sysctl net.ipv4.tcp_congestion_control
 # Available: cubic, reno, bbr
 ```
+
+:::important Congestion Control Algorithms
+- **cubic** (default): Good for most workloads, fair sharing
+- **reno**: Older algorithm, less efficient
+- **bbr** (Google): Better throughput and lower latency, requires kernel 4.9+
+
+BBR is particularly good for:
+- High-bandwidth, high-latency links
+- Reducing bufferbloat
+- Improving throughput
+
+Enable with: `modprobe tcp_bbr && sysctl net.ipv4.tcp_congestion_control=bbr`
+:::
 
 ## Netfilter & nftables
 
