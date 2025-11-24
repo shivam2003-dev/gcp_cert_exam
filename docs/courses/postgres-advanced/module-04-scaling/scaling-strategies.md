@@ -201,6 +201,14 @@ Before scaling, consider:
 Most applications can scale vertically much further than expected. Only move to horizontal scaling when vertical scaling is exhausted or cost-prohibitive.
 :::
 
+## Field Notes & Industry Reads
+
+- [GitLab — Scaling PostgreSQL at GitLab](https://about.gitlab.com/blog/2020/07/27/scaling-postgresql-at-gitlab/) — Real-world lessons from sustaining billions of rows on Postgres.
+- [Crunchy Data — Architecting Postgres for Scale](https://www.crunchydata.com/blog/) — Guides on combining partitioning, sharding, and HA primitives.
+- [Heap Engineering — When to Shard PostgreSQL](https://heapanalytics.com/blog/engineering/when-why-and-how-to-shard-postgres) — Decision-making framework for sharding.
+- [Citus Data — Scaling Out with Citus](https://www.citusdata.com/blog/) — Patterns for turning PostgreSQL into a distributed system.
+- [Netflix Tech Blog — Performance Tuning War Stories](https://netflixtechblog.com/) — Incidents and mitigations that influence scaling choices.
+
 ## Next Steps
 
 Continue to [Streaming Replication](./streaming-replication) to learn how to set up read replicas.

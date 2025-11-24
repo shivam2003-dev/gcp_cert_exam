@@ -180,6 +180,14 @@ Moving data between shards:
 Sharding significantly increases complexity. Only use when other scaling options are exhausted. Most applications never need sharding.
 :::
 
+## Field Notes & Industry Reads
+
+- [Heap Engineering — When (and When Not) to Shard PostgreSQL](https://heapanalytics.com/blog/engineering/when-why-and-how-to-shard-postgres) — Decision matrix and operational trade-offs.
+- [Citus Data — Building Distributed PostgreSQL at Scale](https://www.citusdata.com/blog/) — Real deployments covering tenant isolation, rebalancing, and metadata nodes.
+- [Shopify Engineering — Surviving the Great Shard Split](https://shopify.engineering/) — Playbooks for online shard rebalancing during peak traffic.
+- [Uber Engineering — Schemaless and Sharding Lessons](https://www.uber.com/blog/engineering/) — Handling cross-shard transactions and schema migrations.
+- [Cloudflare Blog — Global Sharded Postgres for Authentication](https://blog.cloudflare.com/) — Geo-distributed shards with latency-aware routing.
+
 ## Next Steps
 
 Continue to [Connection Pooling](./connection-pooling) to learn about managing database connections.

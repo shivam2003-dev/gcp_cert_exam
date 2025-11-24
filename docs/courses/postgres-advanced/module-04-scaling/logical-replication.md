@@ -203,3 +203,11 @@ Logical replication is powerful but more complex than streaming replication. Use
 ## Next Steps
 
 Continue to [Partitioning](./partitioning) to learn about table partitioning.
+
+## Field Notes & Industry Reads
+
+- [AWS Database Blog — Blue/Green Deployments with Logical Replication](https://aws.amazon.com/blogs/database/) — Real migration runbooks and failure lessons.
+- [Crunchy Data — Logical Replication in Production](https://www.crunchydata.com/blog/) — Monitoring tips and slot management best practices.
+- [Percona Blog — Debugging Logical Replication Lag](https://www.percona.com/blog/) — Incident postmortems focused on apply workers and batching.
+- [EDB Blog — Schema Change Management with Logical Replication](https://www.enterprisedb.com/blog) — Strategies for DDL coordination and sequence alignment.
+- [Microsoft Azure — Cross-Region Logical Replication Patterns](https://techcommunity.microsoft.com/t5/azure-database-for-postgresql/bg-p/AzureDatabaseforPostgreSQLBlog) — Reference architectures for hybrid and multi-cloud sync.

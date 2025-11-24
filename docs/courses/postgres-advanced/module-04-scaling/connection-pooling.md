@@ -234,6 +234,14 @@ Monitor pool metrics:
 Connection pooling is essential for high-concurrency applications. PgBouncer can handle 1000s of client connections with just 25 database connections.
 :::
 
+## Field Notes & Industry Reads
+
+- [Crunchy Data — PgBouncer in Production](https://www.crunchydata.com/blog/) — Pool sizing calculators, TLS configuration, and failure drills.
+- [Heroku — How We Keep Millions of Connections under Control](https://blog.heroku.com/) — Multi-tenant pooling design and noisy neighbor mitigation.
+- [Netflix Tech Blog — Connection Storm Postmortems](https://netflixtechblog.com/) — Lessons on surge protection, health checks, and pool exhaustion.
+- [Percona Blog — PgBouncer vs PgPool-II](https://www.percona.com/blog/) — Comparative analysis for transaction pooling use cases.
+- [AWS Builders Library — Load Shedding with Connection Pools](https://aws.amazon.com/builders-library/) — Backpressure patterns using pool wait queues.
+
 ## Next Steps
 
 You've completed Module 4! Move to [Module 5: High Availability & Disaster Recovery](../module-05-ha-dr/intro).

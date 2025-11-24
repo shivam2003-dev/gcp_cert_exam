@@ -258,3 +258,12 @@ Streaming replication is the foundation of PostgreSQL HA. Master it before movin
 ## Next Steps
 
 Continue to [Logical Replication](./logical-replication) to learn about selective table replication.
+
+## Field Notes & Industry Reads
+
+- [Crunchy Data — Streaming Replication Deep Dive](https://www.crunchydata.com/blog/) — WAL streaming internals, `pg_stat_replication` dashboards, and failure drills.
+- [Percona Blog — Tuning PostgreSQL Replication](https://www.percona.com/blog/) — War stories on replica lag, slot bloat, and WAL compression.
+- [AWS Database Blog — Designing HA PostgreSQL](https://aws.amazon.com/blogs/database/) — Reference architectures mixing sync and async replicas across AZs.
+- [EDB Blog — WAL Performance Tuning](https://www.enterprisedb.com/blog) — Storage sizing, `wal_keep_size`, and network tuning in real customer incidents.
+- [Microsoft Azure Postgres Blog — Multi-region Replication Patterns](https://techcommunity.microsoft.com/t5/azure-database-for-postgresql/bg-p/AzureDatabaseforPostgreSQLBlog) — Guidance for cross-region read replicas and failover automation.
+

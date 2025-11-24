@@ -668,6 +668,14 @@ pg_partman is essential for production systems with time-series or large partiti
 Partitioning is one of the most effective ways to manage large tables. Start partitioning before tables become unmanageably large. Use pg_partman to automate partition lifecycle management.
 :::
 
+## Field Notes & Industry Reads
+
+- [Kyle Hailey — Postgres Partition Pains & LockManager Waits](https://www.kylehailey.com/post/postgres-partition-pains-lockmanager-waits) — Hard-earned lessons on partition lock amplification and mitigation via detaching hot partitions.
+- [GitLab Scalability — Partitioning the CI Database](https://about.gitlab.com/blog/) — How GitLab partitioned multi-terabyte tables while keeping the service online.
+- [AWS Database Blog — Automating Partition Management with pg_partman](https://aws.amazon.com/blogs/database/) — Reference architecture for Lambda/pg_cron driven partition creation.
+- [Citus Data — Advanced Partitioning and Sharding Recipes](https://www.citusdata.com/blog/) — Combining native partitioning with distributed tables.
+- [Crunchy Data — Partitioning Performance Deep Dives](https://www.crunchydata.com/blog/) — Benchmarks on pruning, statistics, and index maintenance per partition.
+
 ## Next Steps
 
 Continue to [Sharding](./sharding) to learn about horizontal scaling across databases.
