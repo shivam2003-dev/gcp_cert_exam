@@ -362,6 +362,73 @@ const sidebars = {
       ],
     },
   ],
+  devopsInterviewSidebar: [
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/intro',
+      label: 'Course Introduction',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/git-version-control',
+      label: 'Git & Version Control',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/linux-administration',
+      label: 'Linux Administration',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/networking-fundamentals',
+      label: 'Networking Fundamentals',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/ci-cd-jenkins',
+      label: 'CI/CD & Jenkins',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/terraform-iac',
+      label: 'Terraform & IaC',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/docker-containerization',
+      label: 'Docker & Containers',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/kubernetes',
+      label: 'Kubernetes',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/observability-monitoring',
+      label: 'Observability & Monitoring',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/aws-cloud',
+      label: 'AWS Cloud',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/azure-cloud',
+      label: 'Azure Cloud',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/scripting-tools',
+      label: 'Scripting & Tools',
+    },
+    {
+      type: 'doc',
+      id: 'courses/devops-interview/general-interview',
+      label: 'General Interview Prompts',
+    },
+  ],
 };
 
 module.exports = sidebars;
