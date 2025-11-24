@@ -28,7 +28,7 @@ Use STAR (Situation, Task, Action, Result) framing and quantify impact.
 - Long-term fix (runbooks, tooling, guardrails).
 </details>
 
-### 3. Team Contribution (>5 years)
+### 3. Team Contribution (&gt;5 years)
 <details>
 <summary>Example response.</summary>
 
@@ -44,7 +44,7 @@ Led platform reliability guild, rolled out chaos experiments, mentored junior SR
 - Cultural initiatives (blameless postmortems, runbook reviews).
 </details>
 
-### 5. Contribution (<5 years)
+### 5. Contribution (&lt;5 years)
 <details>
 <summary>Frame for mid-level engineers.</summary>
 
@@ -53,7 +53,7 @@ Describe automations you shipped (e.g., Helm chart generator), on-call rotations
 
 ## Interview Tips
 
-- Keep answers <3 minutes, invite follow-ups.
+- Keep answers &lt;3 minutes, invite follow-ups.
 - Tie tech decisions to customer impact or reliability metrics.
 - Always mention lessons learned and follow-up actions.
 
