@@ -11,7 +11,7 @@ By the end of this module, you will understand:
 - Vertical vs horizontal scaling strategies
 - Streaming replication setup and management
 - Logical replication for selective replication
-- Partitioning strategies (range, list, hash)
+- Partitioning strategies (range, list, hash) and pg_partman automation
 - Sharding approaches and trade-offs
 - Connection pooling with PgBouncer
 
@@ -20,7 +20,7 @@ By the end of this module, you will understand:
 1. [Scaling Strategies](./scaling-strategies) - Vertical vs horizontal
 2. [Streaming Replication](./streaming-replication) - Physical replication
 3. [Logical Replication](./logical-replication) - Selective replication
-4. [Partitioning](./partitioning) - Table partitioning
+4. [Partitioning](./partitioning) - Table partitioning and pg_partman automation
 5. [Sharding](./sharding) - Horizontal scaling
 6. [Connection Pooling](./connection-pooling) - PgBouncer and alternatives
 

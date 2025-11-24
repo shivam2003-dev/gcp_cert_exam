@@ -42,6 +42,18 @@ const courses = [
     level: 'Advanced',
     category: 'Systems Engineering',
   },
+  {
+    id: 'devops-interview',
+    name: 'DevOps Interview Preparation: 180+ Questions with Detailed Answers',
+    shortName: 'DevOps Interview',
+    description: 'Master DevOps interviews with comprehensive Q&A covering Git, Linux, Kubernetes, AWS, Azure, CI/CD, Terraform, Docker, and more.',
+    icon: '💼',
+    color: '#00D9FF',
+    path: 'courses/devops-interview',
+    duration: '4-6 weeks',
+    level: 'Intermediate',
+    category: 'Interview Preparation',
+  },
   // Add more courses here as needed
 ];
 

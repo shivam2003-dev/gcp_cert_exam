@@ -1,0 +1,545 @@
+Play
+4. Git Fork vs Git Clone
+14min
+Play
+5. Explain a scenario where you used Git Fork instead of Git Clone.
+3min
+Play
+6. Git Fork in action with example
+5min
+Start
+Assignment 1: Create a fork of the project mentioned below and create a pull request
+Play
+7. Git Fetch vs Git Pull
+4min
+Play
+8. Show how does Git Fetch and Pull work in Realtime.
+5min
+Play
+9. Which command do you use mostly - Git Fetch or Git Pull and why ?
+3min
+Start
+Assignment 2: Practice Git Fetch vs Git Pull on a GitHub Repo.
+Play
+10. Git Rebase vs Git Merge Detailed Explanation
+10min
+Play
+11. Show practically how Git Rebase is different from Git Merge
+9min
+Play
+12. How to explain Git Merge vs Git Rebase in Interviews (Short Explanation)
+1min
+Start
+Assignment 3: Practice Git Merge vs Git Rebase
+Play
+13. Explain the Git Branching Strategy that you used in your company.
+7min
+Play
+14. Explain 3 challenges that you faced with Git during your work experience.
+9min
+Play
+15. Explain the recent challenge that you faced with Git and how did you address it
+4min
+Play
+16. How do you handle Merge conflicts in Git ?
+6min
+Play
+17. Explain Git Merge Strategies - Ours and Theirs strategies
+5min
+Start
+Assignment 4: Create a Merge Conflict and address it locally using Git merge
+Play
+18. Have you ever used Git tags ? If yes, why ?
+5min
+Play
+19. How do you combine Multiple commits into a Single commit ?
+5min
+Play
+20. Explain 10 Git Commands that you use on Day to Day basis ?
+3min
+Play
+21. I want to ignore pushing changes to a file to Git, How can you do it ?
+5min
+Play
+22. What is the purpose of .git folder in a Git repository ?
+1min
+Play
+23. Can you restore a deleted .git folder ?
+2min
+Play
+24. A teammate accidentally committed a Kubernetes Secret (base64 encoded) to Git.
+5min
+Play
+25. 10 linux commands that you use on day to day basis.
+4min
+Play
+26. Can you restore lost pem file ? If not how can you access the instance ?
+5min
+Play
+27. /Var is almost 90 percent full, What will be your next steps ?
+6min
+Play
+28. Linux Server is slow due to High CPU utilization. How will you fix it ?
+5min
+Play
+29. Application deployed on Nginx returns Connection Refused, How will you fix it ?
+4min
+Play
+30. SSH to an instance stopped working ? How will you troubleshoot the issue ?
+4min
+Play
+31. Find and list the log files older than 7 days in /var/log folder.
+7min
+Play
+32. Find and remove the log files older than 30 days in a folder.
+8min
+Play
+33. Cronjob + Shell script to perform advanced log rotation (Scenario Provided)
+19min
+Play
+34. Bulk creation of linux users using CSV file.
+12min
+Play
+35. Service Health monitor script in Bash
+11min
+Play
+36. Find and delete files over 100MB
+6min
+Play
+37. Get the list of users who logged in today (scenario - some packages deleted)
+7min
+Play
+38. Website doesn't load, How will you investigate ??
+4min
+Play
+39. Using sed command, how to remove first and last line of the file
+3min
+Play
+40. What are the different types of variables in Linux ?
+4min
+Play
+41. Kill vs Kill -9 in Linux
+3min
+Play
+42. Explain DNS in simple words.
+2min
+Play
+43. Explain the complete flow of the request from client to server (OSI Model)
+5min
+Play
+44. Explain the difference between Forward Proxy and Reverse Proxy
+4min
+Play
+45. User Reports slowness in the app, How would you approach this ?
+5min
+Play
+46. Curl Works with IP, Fails with Domain, Why ?
+4min
+Play
+47. Website returns 502 HTTP Status code. What can be the issue ?
+5min
+Play
+48. [Many people cant answer] What is the difference between 0.0.0.0 and 127.0.0.1 ?
+5min
+Play
+49. What is the difference between Public and Private Subnets ?
+1min
+Play
+50. You accidentally created a private subnet instead of public.How will you fix it?
+3min
+Play
+51. What are Jenkins shared libraries and how do they work?
+2min
+Play
+52. Talk about 5 build targets that you use on day to day basis.
+4min
+Play
+53. Which artifact repository do you use for builds ?
+6min
+Play
+54. How do you configure Artifactory for your application in Maven ?
+3min
+Play
+55. Build Passed Locally but Fails in CI, how will you troubleshoot ?
+6min
+Play
+56. CI Pipeline Succeeds but App is Broken in Prod, What action will you take ?
+7min
+Play
+57. Pipeline Slows Down Over Time (Builds taking more time) - How will you fix ?
+6min
+Play
+58. A developer pushes a feature branch, but the pipeline doesn’t trigger.
+4min
+Play
+59. Your build fails because it can’t download a dependency from your artifact repos
+4min
+Play
+60. Python Build Fails on CI But Works Locally, What can be the issue ?
+6min
+Play
+61. Explain Python Application Build Process in Detail.
+6min
+Play
+62. Using Static Code Analysis what kind of problems can you identify ?
+4min
+Play
+63. Static Code Analysis Slows Down CI Pipeline, How will you fix it ?
+5min
+Play
+64. App in ‘OutOfSync’ State in Argo CD, But No Git Changes
+4min
+Play
+65. When a build fails in Jenkins, How will you send an email ?
+3min
+Play
+66. What is the difference between for_each and for in Terraform?
+4min
+Play
+67. What are modules in Terraform and why should we use them ?
+5min
+Play
+68. What is the role of statefile in Terraform ?
+5min
+Play
+69. Have you considered storing statefile in Git instead of AWS S3 or Azure Blob ?
+5min
+Play
+70. Explain Terraform Statefile Management
+9min
+Play
+71. Two DevOps Engineers attempts to update statefile at once. What happens ?
+5min
+Play
+72. We don't have a cloud account. Where can we store the statefile?
+4min
+Play
+73. Do you use Terraform Enterprise or Community version ?
+5min
+Play
+74. Have you heard about opentofu ? Do you think it is better than Terraform ?
+5min
+Play
+75. Write terraform code to create any resource on AWS ?
+6min
+Play
+76. What is the difference between Resource and Datasource in terraform ?
+6min
+Play
+77. Docker Container Exits Immediately, how will you troubleshoot ?
+5min
+Play
+78. [90 Percent get this wrong] What is the purpose of EXPOSE in Dockerfile ?
+6min
+Play
+79. Port is Not Accessible on localhost even after Port mapping in Docker
+6min
+Play
+80. Data lost when container stops and restarts, How will you fix it ?
+3min
+Play
+81. You made change in your code, rebuilt the image, but the change isn't reflected?
+5min
+Play
+82. App Crashes with "Permission Denied" in Container but works fine on localhost.
+5min
+Play
+83. Docker host is running out of disk space. How do you clean up?
+5min
+Play
+84. How will you Debug a Live Container ?
+3min
+Play
+85. Which container registry do you use in your organization ?
+3min
+Play
+86. Explain the difference between CMD and Entrypoint in Docker.
+9min
+Play
+87. What docker commands you use on day to day basis ?
+3min
+Play
+88. when will you forcefully remove a container and how ?
+2min
+Play
+89. Explain Kubernetes Cluster Architecture.
+9min
+Play
+90. How various components of Kubernetes interact when you run kubectl apply (Pod)
+4min
+Play
+91. What is the purpose of services in Kubernetes ?
+2min
+Play
+92. Why is hardcoding Pod IP communication is a bad practice ?
+4min
+Play
+93. What are the types of services in Kubernetes ?
+6min
+Play
+94. What are labels and selectors in Kubernetes ?
+4min
+Play
+95. What would you recommend NodePort service or Load balancer type service and why
+3min
+Play
+96. How Kubernetes Services are related to Kube Proxy ?
+7min
+Play
+97. What is the disadvantage of LoadBalancer service type ?
+3min
+Play
+98. What is a Headless Service in Kubernetes and when did you use it ?
+7min
+Play
+99. Can a Pod access Service in different namespace, if Yes, how ?
+2min
+Play
+100. Explain how you can restrict access to db pod to only one app in the namespace ?
+5min
+Play
+101. Explain the deployment strategy that you follow in your organization.
+6min
+Play
+102. Explain the rollback strategy that you follow in your organization.
+3min
+Play
+103. Design a solution to avoid rollbacks.
+4min
+Play
+104. Explain the deployment strategies that you used in the past.
+5min
+Play
+105. Explain the role of CoreDNS in Kubernetes.
+3min
+Play
+106. A DevOps engineer tainted a node as "Noschedule". Can you still schedule a pod ?
+5min
+Play
+107. Pod is Stuck in CrashLoopBackOff, What steps will you take ?
+4min
+Play
+108. what is the difference between liveness and readiness probes ?
+8min
+Play
+109. Explain the difference between Ingress and LB service type.
+3min
+Play
+110. Your app works with ClusterIP but fails with Ingress. How do you troubleshoot it
+6min
+Play
+111. Why do I need to setup Ingress controller after creating ingress ?
+2min
+Play
+112. We have an inhouse load balancer, Can we use Ingress with our load balancer ?
+4min
+Play
+113. Your Deployment has replicas: 3, but only 1 pod is running. What could be wrong?
+7min
+Play
+114. Your pod mounts a ConfigMap, but changes to the ConfigMap are not reflected ?
+6min
+Play
+115. Explain how Node Affinity works and when will you use it ?
+4min
+Play
+116. What is the difference between Node Affinity and Node Label Selector ?
+6min
+Play
+117. What is container runtime in Kubernetes ?
+2min
+Play
+118. What is Kubernetes QOS ?
+7min
+Play
+119. What are requests and limits in Kubernetes ?
+10min
+Play
+120. Explain 3 challenges that you faced while working on Kubernetes ?
+33min
+Play
+121. Can we use Kubernetes Master for scheduling the pods ?
+3min
+Play
+122. Explain Horizontal vs Vertical Scaling in Kubernetes or in general
+5min
+Play
+123. What are the different types of secrets in Kubernetes ?
+5min
+Play
+124. What is the difference between monitoring and observability ?
+3min
+Play
+125. how to emit custom logs and metrics in your application ?
+6min
+Play
+126. What kind of metrics do you scrape with prometheus in your current organization?
+4min
+Play
+127. Have you worked on Observability if yes, explain what did you do ?
+9min
+Play
+128. What is the difference between logs, metrics and traces ?
+3min
+Play
+129. What is the difference between push and pull based monitoring ?
+4min
+Play
+130. Which tools have you used to build observability stack ?
+4min
+Play
+131. Users report slowness in app. Logs don’t show errors, and CPU is good. Fix it.
+5min
+Play
+132. How do you trace a request across multiple microservices in a Kubernetes cluster
+7min
+Play
+133. A pod crashes randomly with OOMKilled. How do you identify and fix this?
+5min
+Play
+134. You got woken up at 2AM by false alarms. What's your strategy to reduce noise ?
+7min
+Play
+135. Explain how will you design a highly available and scalable multi-tier app.
+5min
+Play
+136. What is AWS NAT and when is it used ?
+6min
+Play
+137. How to enable Internet access to the application deployed in a private subnet ?
+6min
+Play
+138. Can applications in different subnets of a VPC interact by default, If no, why ?
+4min
+Play
+139. Explain NACL vs SG and which on do you use in your ogranization ?
+6min
+Play
+140. EC2 Instance terminated unexpectedly, How will you troubleshoot ?
+2min
+Play
+141. Lambda Function Fails Randomly, How will you fix the issue ?
+4min
+Play
+142. What will you do when AWS RDS Storage is Full ?
+5min
+Play
+143. Developer Deleted Critical Resources like S3, RDS and EC2. What will you do ?
+5min
+Play
+144. Explain a cost optimization activity that you performed in the current org.
+5min
+Play
+145. Explain a recent challenge that you faced with AWS and how did you solve it ?
+5min
+Play
+146. Auto Scaling Group Not Launching EC2, What can be the issue ?
+5min
+Play
+147. Which AWS services do you use in your day to day life ?
+4min
+Play
+148. Have you used AWS EFS ? If yes, what issues did you run into ?
+4min
+Play
+149. When will you go for EFS over EBS in realtime ?
+3min
+Play
+150. Disable AWS console access to the IAM Users.
+2min
+Play
+151. How can AWS lambda in one AWS account connect to s3 bucket in other account ?
+4min
+Play
+152. What is AWS STS and how does it work ?
+7min
+Play
+153. What is trust policy in AWS and why is it used ?
+4min
+Play
+154. How a Lambda function in AWS Account A interact with Dynamodb in Account B ?
+5min
+Play
+155. What are the disadvantages of using EBS volumes in Kubernetes ?
+4min
+Play
+156. AWS Secret Manager vs Parameter Store
+3min
+Play
+157. Explain your day-to-day activities related to Databases
+3min
+Play
+158. Have you worked with Lambda in AWS ? Explain your activities with lambda.
+4min
+Play
+159. What is the difference between IAM user & role ?
+3min
+Play
+160. User reports random downtime in Webapp hosted in Azure App Services
+5min
+Play
+161. How can you schedule a script to run everyday on Azure ?
+3min
+Play
+162. Cannot SSH or RDP to a Azure VM, How will you fix it ?
+3min
+Play
+163. Azure Function failed to execute. How do you debug?
+4min
+Play
+164. How will you restrict access to a storage account so only VMs in a specific VNet
+4min
+Play
+165. Your team wants to replicate a production SQL database to staging daily. What’s
+3min
+Play
+166. How do you use tags on the resources in Azure ? Do you enforce them ?
+5min
+Play
+167. How do you create resources on Azure ? Bicep or ARM or Terraform ?
+4min
+Play
+168. Your team has access to delete resources. How do you prevent accidental deletion
+4min
+Play
+169. In AKS cluster how will you secure app-to-app communication.
+4min
+Play
+170. Explain how to connect Azure VMs to a database that is on-premises
+6min
+Play
+171. How do you ensure data redundancy and performance in multi-region deployment.
+6min
+Play
+172. A VM-based application in East US is slow for users in Europe. What do you do?
+6min
+Play
+173. Service Principals vs Managed Identities, Which one is better ?
+6min
+Play
+174. Explain how did you use NSG and ASG in realtime.
+6min
+Play
+175. What are some common packages that you use as a DevOps Engineer ?
+4min
+Play
+176. Day to Day task: Tell about a task where you used Python
+11min
+Play
+177. Write a script to find and print a pattern from huge log file using Python ?
+10min
+Play
+178. Please walk us through a typical day at your work.
+4min
+Play
+179. Tell us about your DevOps Experience.
+5min
+Play
+180. What is your Contribution in the Team [for > 5 years candidates]
+4min
+Play
+181. What is your Contribution in the Team [for < 5 years candidates]
+4min
+Play
+182. Tell us about your project in your current organization.
+5min
